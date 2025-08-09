@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSigStore } from "../store/sigStore";
 import { useBaseballTexture } from "../hooks/useBaseballTexture";
 import Toolbar from "../components/ui/Toolbar";
@@ -6,8 +6,13 @@ import Stage from "../components/three/Stage";
 import SignaturesPanel from "../components/panel/SignaturePanel";
 
 export default function Studio() {
-  const { signatures, shuffleSeed } = useSigStore();
+  const { signatures, shuffleSeed, resetSignatures } = useSigStore();
   const { texture } = useBaseballTexture(signatures, shuffleSeed);
+
+  // Automatically reset signatures on first load
+  useEffect(() => {
+    resetSignatures();
+  }, [resetSignatures]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-stretch">

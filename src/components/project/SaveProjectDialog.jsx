@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Save, X } from "lucide-react";
 import { useSigStore } from "../../store/sigStore";
-import { saveProject, updateProject } from "../../services/projectService";
+import { createProject, updateProject, getUserId } from "../../services/projectService";
 
 export default function SaveProjectDialog({ isOpen, onClose }) {
   const { 
@@ -14,6 +14,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
   const [projectName, setProjectName] = useState(currentProjectName);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -24,27 +25,44 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
 
     setIsSaving(true);
     setError("");
+    setSuccess("");
 
     const enabledSignatures = signatures
       .filter(sig => sig.enabled)
       .map(sig => sig.name);
 
-    let result;
-    if (currentProjectId) {
-      // Update existing project
-      result = await updateProject(currentProjectId, projectName.trim(), enabledSignatures);
-    } else {
-      // Save new project
-      result = await saveProject(projectName.trim(), enabledSignatures);
-    }
+    try {
+      let result;
+      if (currentProjectId) {
+        // Update existing project
+        await updateProject({
+          projectId: currentProjectId,
+          projectName: projectName.trim(),
+          signatureNames: enabledSignatures
+        });
+        result = { id: currentProjectId };
+      } else {
+        // Save new project
+        result = await createProject({
+          userId: getUserId(),
+          projectName: projectName.trim(),
+          signatureNames: enabledSignatures
+        });
+      }
 
-    if (result.success) {
       if (result.id) {
         setCurrentProject(result.id, projectName.trim());
       }
-      onClose();
-    } else {
-      setError(result.error || "Failed to save project");
+      const message = currentProjectId ? "Project updated successfully!" : "Project saved successfully!";
+      setSuccess(message);
+      
+      // Auto-close after showing success message
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    } catch (error) {
+      console.error("Error saving project:", error);
+      setError(error.message || "Failed to save project");
     }
 
     setIsSaving(false);
@@ -53,14 +71,15 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
   const handleClose = () => {
     setProjectName(currentProjectName);
     setError("");
+    setSuccess("");
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="rounded-2xl p-6 panel border w-full max-w-md">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div className="rounded-2xl p-4 sm:p-6 panel border w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">
             {currentProjectId ? "Update Project" : "Save Project"}
@@ -83,7 +102,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="Enter project name..."
-              className="w-full px-3 py-2 rounded-xl border border-white/10 bg-white/5 outline-none focus:ring-2 ring-accent"
+              className="w-full px-3 py-2 rounded-xl border border-white/10 bg-white/5 outline-none focus:ring-2 ring-accent placeholder:text-muted"
               disabled={isSaving}
             />
           </div>
@@ -94,7 +113,13 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
             </div>
           )}
 
-          <div className="mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
+          {success && (
+            <div className="mb-4 p-3 rounded-xl bg-green-500/20 border border-green-500/50 text-green-400 text-sm">
+              {success}
+            </div>
+          )}
+
+          <div className="mb-4 p-3 rounded-xl panel border border-white/10">
             <div className="text-sm text-muted mb-1">
               Enabled signatures ({signatures.filter(s => s.enabled).length})
             </div>
@@ -104,19 +129,19 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <button
               type="button"
               onClick={handleClose}
               disabled={isSaving}
-              className="flex-1 px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition"
+              className="flex-1 px-4 py-3 sm:py-2 rounded-xl border border-white/10 btn-glass transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="flex-1 px-4 py-2 rounded-xl bg-accent hover:brightness-[1.05] text-white transition inline-flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-3 sm:py-2 rounded-xl bg-accent hover:brightness-[1.05] text-white transition inline-flex items-center justify-center gap-2"
             >
               {isSaving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

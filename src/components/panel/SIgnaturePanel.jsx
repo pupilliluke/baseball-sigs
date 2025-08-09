@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Trash2, Upload, Save, Search, FolderOpen } from "lucide-react";
+import { Plus, Trash2, Upload, Save, Search, FolderOpen, X } from "lucide-react";
 import { useSigStore } from "../../store/sigStore";
 import LabeledSlider from "./LabeledSlider";
 import ExportTextureButton from "./ExportTextureButton";
@@ -16,6 +16,7 @@ export default function SignaturesPanel() {
     addSignature, 
     toggleSignature, 
     removeSignature, 
+    clearAllSignatures,
     setRoughness, 
     setMetalness,
     setCurrentProject,
@@ -65,31 +66,38 @@ export default function SignaturesPanel() {
     loadProjectSignatures(project.signatureNames || []);
   };
 
+  const handleClearAll = () => {
+    if (signatures.length === 0) return;
+    if (confirm(`Clear all ${signatures.length} signatures? This cannot be undone.`)) {
+      clearAllSignatures();
+    }
+  };
+
   return (
     <div className={`rounded-2xl p-4 flex flex-col h-full ${panel}`}>
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-white/10 flex-shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-white/10 flex-shrink-0 gap-3">
         <div>
           <div className="text-xl font-semibold tracking-tight">Signatures</div>
           <div className="text-xs text-white/60">Curate the roster and paint the leather</div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-start sm:justify-end">
           <button 
             onClick={() => setShowProjectList(true)} 
-            className={glassBtn}
+            className={`${glassBtn} text-sm`}
             title="Load Project"
           >
-            <FolderOpen className="h-4 w-4" /> Load
+            <FolderOpen className="h-4 w-4" /> <span className="hidden xs:inline">Load</span>
           </button>
           <button 
             onClick={() => setShowSaveDialog(true)} 
-            className={glassBtn}
+            className={`${glassBtn} text-sm`}
             title="Save Project"
           >
-            <Save className="h-4 w-4" /> Save
+            <Save className="h-4 w-4" /> <span className="hidden xs:inline">Save</span>
           </button>
-          <label className={glassBtn} title="Import JSON">
-            <Upload className="h-4 w-4" /> Import
+          <label className={`${glassBtn} text-sm`} title="Import JSON">
+            <Upload className="h-4 w-4" /> <span className="hidden xs:inline">Import</span>
             <input type="file" accept="application/json" className="sr-only" onChange={onImport} />
           </label>
         </div>
@@ -112,8 +120,8 @@ export default function SignaturesPanel() {
   </button>
 </div>
 
-{/* Filter */}
-<div className="mt-3 flex items-center gap-2 flex-shrink-0">
+{/* Filter and Controls */}
+<div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2 flex-shrink-0">
   <div className="flex-1 relative">
     <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
     <input
@@ -124,8 +132,20 @@ export default function SignaturesPanel() {
       aria-label="Filter signatures"
     />
   </div>
-  <div className="text-sm text-muted whitespace-nowrap">
-    Showing <span className="text-app">{shown.length}</span> • Enabled <span className="text-app">{enabledCount}</span>
+  <div className="flex items-center gap-2 justify-between sm:justify-end">
+    {signatures.length > 0 && (
+      <button
+        onClick={handleClearAll}
+        className="px-2 py-2 rounded-lg hover:bg-red-500/10 text-red-400 transition text-sm inline-flex items-center gap-1"
+        title="Clear all signatures"
+      >
+        <X className="h-4 w-4" />
+        <span>Clear signatures</span>
+      </button>
+    )}
+    <div className="text-sm text-muted whitespace-nowrap">
+      Showing <span className="text-app">{shown.length}</span> • Enabled <span className="text-app">{enabledCount}</span>
+    </div>
   </div>
 </div>
 

@@ -11,7 +11,7 @@ export default function Stage({ texture }) {
   
   return (
     // Give the stage a real, predictable height
-    <div className="relative h-[65vh] min-h-[560px] rounded-2xl panel border overflow-hidden">
+    <div className="relative h-[50vh] sm:h-[60vh] lg:h-[65vh] min-h-[400px] sm:min-h-[500px] lg:min-h-[560px] rounded-2xl panel border overflow-hidden">
       {/* Make Canvas fill the stage exactly */}
       <Canvas
         className="!absolute inset-0 h-full w-full"
@@ -49,12 +49,13 @@ export default function Stage({ texture }) {
       </Canvas>
 
       {/* Info badges pinned inside the stage */}
-      <div className="absolute left-3 bottom-3 flex flex-col gap-2">
+      <div className="absolute left-2 sm:left-3 bottom-2 sm:bottom-3 flex flex-col gap-1 sm:gap-2">
         <div className="text-xs text-white/70 bg-black/40 px-2 py-1 rounded-md border border-white/10">
           Preset: {preset.name}
         </div>
         <div className="text-xs text-white/70 bg-black/40 px-2 py-1 rounded-md border border-white/10">
-          Drag to orbit • Scroll to zoom
+          <span className="hidden sm:inline">Drag to orbit • Scroll to zoom</span>
+          <span className="sm:hidden">Drag & pinch to navigate</span>
         </div>
       </div>
     </div>

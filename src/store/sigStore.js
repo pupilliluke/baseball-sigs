@@ -97,6 +97,7 @@ export const useSigStore = create((set, get) => ({
   removeSignature: (id) => set((s) => ({
     signatures: s.signatures.filter(sig => sig.id !== id)
   })),
+  clearAllSignatures: () => set({ signatures: [] }),
   resetSignatures: () => set({ signatures: DEFAULT_NAMES.map(makeSignature) }),
 
   // Theme + accent methods

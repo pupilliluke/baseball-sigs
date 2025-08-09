@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSigStore } from "../../store/sigStore";
 import { Sun, Moon, Monitor, Droplets } from "lucide-react";
 
-const btn = "px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 active:bg-white/20 border border-white/10 transition inline-flex items-center gap-2";
+const btn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
 const item = "px-3 py-2 rounded-lg hover:bg-white/10 cursor-pointer flex items-center gap-2";
 const dot  = "h-3 w-3 rounded-full";
 
