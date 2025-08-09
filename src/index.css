@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* ==== Accent + Theme tokens (set by AppShell) ==== */
+:root {
+  --accent-h: 200;  /* updated in AppShell */
+  --accent-s: 90%;
+  --accent-l: 60%;
+
+  /* Light defaults */
+  --surface: hsl(220 20% 98%);
+  --text: hsl(222 47% 11%);        /* deep black-ish for body text */
+  --muted: hsl(222 10% 40%);       /* medium-dark gray for secondary text */
+  --panel-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 4%, transparent);
+  --panel-border: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 18%, transparent);
+
+  --btn-bg:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 10%, transparent);
+  --btn-bg-h: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 15%, transparent);
+  --btn-bg-a: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 20%, transparent);
+  --btn-br:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent);
+
+  --input-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 6%, transparent);
+  --input-br: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 22%, transparent);
+}
+
+/* Dark theme overrides */
+.dark {
+  --surface: hsl(220 26% 10%);
+  --text: hsl(0 0% 98%);
+  --panel-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 6%, transparent);
+  --panel-border: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 24%, transparent);
+  --muted: hsl(220 10% 70%);
+
+  --btn-bg:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 10%, transparent);
+  --btn-bg-h: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 15%, transparent);
+  --btn-bg-a: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 20%, transparent);
+  --btn-br:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent);
+
+  --input-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 7%, transparent);
+  --input-br: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 26%, transparent);
+}
+
+/* Utility layer to avoid repeating long arbitrary values */
+@layer utilities {
+  .bg-surface { background-color: var(--surface); }
+  .text-app { color: var(--text); }
+  .text-muted { color: var(--muted); }
+
+  .panel { background: var(--panel-bg); border-color: var(--panel-border); }
+  .btn-glass { 
+    background: var(--btn-bg); 
+    border-color: var(--btn-br);
+  }
+  .btn-glass:hover { background: var(--btn-bg-h); }
+  .btn-glass:active { background: var(--btn-bg-a); }
+
+  .input-base {
+    background: var(--input-bg); 
+    border-color: var(--input-br);
+  }
+
+  .ring-accent { --tw-ring-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
+  .text-accent { color: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
+  .bg-accent { background: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
+  .border-accent { border-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
+}
+
+/* Inputs: sliders & checkboxes pick up the accent */
+input[type="range"] {
+  accent-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
+input[type="checkbox"] {
+  accent-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
