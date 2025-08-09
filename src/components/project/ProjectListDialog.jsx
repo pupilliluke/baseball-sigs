@@ -85,8 +85,8 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="rounded-2xl p-4 sm:p-6 panel border w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/80 dark:bg-black/80 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="rounded-2xl p-4 sm:p-6 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/20 text-black dark:text-white w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">My Projects</h2>
           <button

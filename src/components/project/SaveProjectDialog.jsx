@@ -78,8 +78,8 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="rounded-2xl p-4 sm:p-6 panel border w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 dark:bg-black/80 flex items-center justify-center z-50 p-4">
+      <div className="rounded-2xl p-4 sm:p-6 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/20 text-black dark:text-white w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">
             {currentProjectId ? "Update Project" : "Save Project"}
@@ -102,7 +102,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="Enter project name..."
-              className="w-full px-3 py-2 rounded-xl border border-white/10 bg-white/5 outline-none focus:ring-2 ring-accent placeholder:text-muted"
+              className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 outline-none focus:ring-2 ring-accent placeholder:text-gray-500 dark:placeholder:text-muted text-black dark:text-white"
               disabled={isSaving}
             />
           </div>
@@ -119,11 +119,11 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
             </div>
           )}
 
-          <div className="mb-4 p-3 rounded-xl panel border border-white/10">
-            <div className="text-sm text-muted mb-1">
+          <div className="mb-4 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+            <div className="text-sm text-gray-600 dark:text-muted mb-1">
               Enabled signatures ({signatures.filter(s => s.enabled).length})
             </div>
-            <div className="text-xs text-muted/70">
+            <div className="text-xs text-gray-500 dark:text-muted/70">
               {signatures.filter(s => s.enabled).map(s => s.name).slice(0, 5).join(", ")}
               {signatures.filter(s => s.enabled).length > 5 && "..."}
             </div>
@@ -134,7 +134,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
               type="button"
               onClick={handleClose}
               disabled={isSaving}
-              className="flex-1 px-4 py-3 sm:py-2 rounded-xl border border-white/10 btn-glass transition"
+              className="flex-1 px-4 py-3 sm:py-2 rounded-xl border border-gray-300 dark:border-white/10 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-black dark:text-white transition"
             >
               Cancel
             </button>
