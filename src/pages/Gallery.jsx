@@ -18,7 +18,7 @@ export default function Gallery(){
     <div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Lighting Gallery</h1>
-        <p className="text-muted">Pick a mood for your baseball — presets apply to the Studio instantly</p>
+        <p className="text-muted">Pick a mood for your ball — presets apply to the Studio instantly</p>
       </div>
 
       <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

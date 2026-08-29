@@ -10,6 +10,10 @@ export default function About(){
         <h2 className="text-2xl font-bold mb-3">How it works</h2>
         <ol className="list-decimal pl-6 space-y-2 text-muted">
           <li>
+            <strong className="text-app">Pick your ball.</strong> Baseball, basketball, or football — switch
+            sports in the toolbar; each keeps its own roster of legends.
+          </li>
+          <li>
             <strong className="text-app">Curate the roster.</strong> Add, remove, or toggle names in the
             Signatures panel — every change repaints the ball live. Import a JSON list if you already have one.
           </li>

@@ -1,6 +1,6 @@
 import React from "react";
 import { RotateCcw, Play, Pause, Shuffle, Lightbulb } from "lucide-react";
-import { useSigStore, LIGHTING_PRESETS } from "../../store/sigStore";
+import { useSigStore, LIGHTING_PRESETS, SPORTS } from "../../store/sigStore";
 import ThemeMenu from "./ThemeMenu";
 import VideoExportButton from "../panel/VideoExportButton";
 
@@ -10,12 +10,33 @@ const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-cente
 
 export default function Toolbar(){
   const {
+    sport, setSport,
     resetSignatures, toggleRotate, autoRotate,
     shuffleLayout, currentPreset, setPreset, pushToast,
   } = useSigStore();
 
   return (
     <div className="flex flex-wrap gap-2 panel border rounded-xl p-2 justify-center lg:justify-start items-center">
+      {/* Sport switcher */}
+      <div className="inline-flex rounded-xl border overflow-hidden" style={{ borderColor: "var(--panel-border)" }}>
+        {Object.entries(SPORTS).map(([key, { label, emoji }]) => (
+          <button
+            key={key}
+            onClick={() => setSport(key)}
+            className={`px-3 py-2 text-sm inline-flex items-center gap-1.5 transition ${
+              sport === key
+                ? "bg-accent/20 text-accent font-medium"
+                : "text-muted hover:text-app hover:bg-black/5 dark:hover:bg-white/10"
+            }`}
+            title={`Switch to ${label.toLowerCase()}`}
+            aria-pressed={sport === key}
+          >
+            <span aria-hidden="true">{emoji}</span>
+            <span className="hidden md:inline">{label}</span>
+          </button>
+        ))}
+      </div>
+
       <ThemeMenu />
       <button
         onClick={() => { resetSignatures(); pushToast("Roster reset to the default lineup", "info"); }}

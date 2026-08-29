@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, ContactShadows, AdaptiveDpr, Html } from "@react-three/drei";
 import * as THREE from "three";
-import SpinningBaseball from "./SpinningBaseball";
+import SpinningBall from "./SpinningBaseball";
 import { useSigStore, LIGHTING_PRESETS } from "../../store/sigStore";
 
 export default function Stage({ texture }) {
@@ -35,7 +35,7 @@ export default function Stage({ texture }) {
         />
 
         {texture ? (
-          <SpinningBaseball texture={texture} />
+          <SpinningBall texture={texture} />
         ) : (
           <Html center>
             <div className="px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-white text-sm whitespace-nowrap">

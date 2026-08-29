@@ -5,6 +5,7 @@ import LabeledSlider from "./LabeledSlider";
 import ExportTextureButton from "./ExportTextureButton";
 import SaveProjectDialog from "../project/SaveProjectDialog";
 import ProjectListDialog from "../project/ProjectListDialog";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 const panel = "rounded-2xl p-4 flex flex-col h-full panel border";
 const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
@@ -12,6 +13,8 @@ const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-cente
 
 export default function SignaturesPanel({ textureCanvas }) {
   const {
+    sport,
+    setSport,
     signatures,
     addSignature,
     toggleSignature,
@@ -32,6 +35,7 @@ export default function SignaturesPanel({ textureCanvas }) {
   const [draft, setDraft] = useState("");
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showProjectList, setShowProjectList] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const shown = signatures.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()));
   const enabledCount = signatures.filter(s => s.enabled).length;
@@ -68,22 +72,15 @@ export default function SignaturesPanel({ textureCanvas }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "signatures.json";
+    a.download = `${sport}-signatures.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
   const handleLoadProject = (project) => {
+    if (project.sport && project.sport !== sport) setSport(project.sport);
     setCurrentProject(project.id, project.projectName);
     loadProjectSignatures(project.signatures || project.signatureNames || []);
-  };
-
-  const handleClearAll = () => {
-    if (signatures.length === 0) return;
-    if (confirm(`Clear all ${signatures.length} signatures? This cannot be undone.`)) {
-      clearAllSignatures();
-      pushToast("All signatures cleared", "info");
-    }
   };
 
   return (
@@ -168,7 +165,7 @@ export default function SignaturesPanel({ textureCanvas }) {
         <div className="flex items-center gap-2 justify-between sm:justify-end">
           {signatures.length > 0 && (
             <button
-              onClick={handleClearAll}
+              onClick={() => setConfirmClear(true)}
               className="px-2 py-2 rounded-lg hover:bg-red-500/10 text-red-400 transition text-sm inline-flex items-center gap-1"
               title="Clear all signatures"
             >
@@ -246,6 +243,14 @@ export default function SignaturesPanel({ textureCanvas }) {
         isOpen={showProjectList}
         onClose={() => setShowProjectList(false)}
         onLoadProject={handleLoadProject}
+      />
+      <ConfirmDialog
+        open={confirmClear}
+        onClose={() => setConfirmClear(false)}
+        onConfirm={() => { clearAllSignatures(); pushToast("All signatures cleared", "info"); }}
+        title="Clear all signatures?"
+        message={`This removes all ${signatures.length} signatures from the ball. Saved projects are not affected.`}
+        confirmLabel="Clear all"
       />
     </div>
   );

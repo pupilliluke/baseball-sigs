@@ -4,6 +4,7 @@ import { useSigStore } from "../../store/sigStore";
 
 export default function VideoExportButton() {
   const pushToast = useSigStore((s) => s.pushToast);
+  const sport = useSigStore((s) => s.sport);
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const recorderRef = useRef(null);
@@ -46,7 +47,7 @@ export default function VideoExportButton() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `spinning-baseball-${Date.now()}.${fileExtension}`;
+        a.download = `spinning-${sport}-${Date.now()}.${fileExtension}`;
         a.click();
         URL.revokeObjectURL(url);
         setIsProcessing(false);

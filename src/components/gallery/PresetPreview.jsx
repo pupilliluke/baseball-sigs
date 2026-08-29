@@ -2,12 +2,22 @@ import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+import { useSigStore } from "../../store/sigStore";
 
-function MiniBaseball() {
+// Plain-colored stand-in for the active sport's ball
+const MINI_BALLS = {
+  baseball: { color: "#f8f5ec", scale: [1, 1, 1] },
+  basketball: { color: "#d96f26", scale: [1.05, 1.05, 1.05] },
+  football: { color: "#6d4123", scale: [0.62, 1.05, 0.62] },
+};
+
+function MiniBall() {
+  const sport = useSigStore((s) => s.sport);
+  const { color, scale } = MINI_BALLS[sport] || MINI_BALLS.baseball;
   return (
-    <mesh castShadow receiveShadow>
+    <mesh castShadow receiveShadow scale={scale} rotation={[0.15, 0, -0.1]}>
       <sphereGeometry args={[0.8, 48, 48]} />
-      <meshStandardMaterial color="#f8f8f8" roughness={0.6} metalness={0.05} />
+      <meshStandardMaterial color={color} roughness={0.6} metalness={0.05} />
     </mesh>
   );
 }
@@ -36,7 +46,7 @@ export default function PresetPreview({ preset, className = "" }) {
           shadow-mapSize-height={256}
         />
 
-        <MiniBaseball />
+        <MiniBall />
 
         <Suspense fallback={null}>
           <Environment preset={preset.environment} />

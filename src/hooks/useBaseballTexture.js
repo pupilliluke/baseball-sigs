@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { drawBaseballTexture, SIGNATURE_FONT_PROBES } from "../lib/drawBaseballTexture";
+import { drawBallTexture, SIGNATURE_FONT_PROBES } from "../lib/drawBaseballTexture";
 
-export function useBaseballTexture(signatures, seedStr) {
+export function useBallTexture(signatures, seedStr, sport) {
   // Canvas + texture are created once, eagerly, so the texture is available on
   // the very first render (a ref-based texture would never trigger a re-render).
   const [{ canvas, texture }] = useState(() => {
@@ -33,9 +33,9 @@ export function useBaseballTexture(signatures, seedStr) {
   }, []);
 
   useEffect(() => {
-    drawBaseballTexture(canvas, signatures, seedStr);
+    drawBallTexture(canvas, signatures, seedStr, sport);
     texture.needsUpdate = true;
-  }, [canvas, texture, signatures, seedStr, fontsReady]);
+  }, [canvas, texture, signatures, seedStr, sport, fontsReady]);
 
   return { texture, canvas };
 }

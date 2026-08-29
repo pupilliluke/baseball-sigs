@@ -1,13 +1,13 @@
 import React from "react";
 import { useSigStore } from "../store/sigStore";
-import { useBaseballTexture } from "../hooks/useBaseballTexture";
+import { useBallTexture } from "../hooks/useBaseballTexture";
 import Toolbar from "../components/ui/Toolbar";
 import Stage from "../components/three/Stage";
 import SignaturesPanel from "../components/panel/SignaturePanel";
 
 export default function Studio() {
-  const { signatures, shuffleSeed } = useSigStore();
-  const { texture, canvas } = useBaseballTexture(signatures, shuffleSeed);
+  const { signatures, shuffleSeed, sport } = useSigStore();
+  const { texture, canvas } = useBallTexture(signatures, shuffleSeed, sport);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-stretch">

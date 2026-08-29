@@ -1,20 +1,43 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 let idCounter = 0;
 const makeSignature = (name) => ({ id: `${Date.now()}_${idCounter++}`, name, enabled: true });
 
-// Persistent keys
+// Legacy persisted keys (pre-workspace); still read as initial fallbacks
 const THEME_KEY = "fs_theme";   // "system" | "light" | "dark"
 const ACCENT_KEY = "fs_accent"; // "sky" | "emerald" | "violet" | "amber"
 
-export const DEFAULT_NAMES = [
-  "Babe Ruth","Jackie Robinson","Hank Aaron","Willie Mays","Ted Williams","Lou Gehrig","Mickey Mantle","Derek Jeter","Ichiro Suzuki","Albert Pujols",
-  "Nolan Ryan","Sandy Koufax","Pedro Martínez","Clayton Kershaw","Greg Maddux","Randy Johnson","Mariano Rivera","Shohei Ohtani","Mike Trout","Mookie Betts",
-  "Yogi Berra","Johnny Bench","Roberto Clemente","Cal Ripken Jr.","Ken Griffey Jr.","Barry Bonds","David Ortiz","Tony Gwynn","Stan Musial","Honus Wagner",
-  "Joe DiMaggio","Satchel Paige","Walter Johnson","Cy Young","Ozzie Smith","Ryne Sandberg","Chipper Jones","Jeff Bagwell","Craig Biggio","George Brett",
-  "Paul Molitor","Frank Thomas","Vladimir Guerrero","Adrián Beltré","Carlos Beltrán","Bryce Harper","Juan Soto","Freddie Freeman","Buck O'Neil","Branch Rickey",
-  "Vin Scully","Harry Caray","Bob Uecker","Bill James","Billy Beane","Theo Epstein","Joe Torre","Dusty Baker"
-];
+export const SPORTS = {
+  baseball: { label: "Baseball", emoji: "⚾" },
+  basketball: { label: "Basketball", emoji: "🏀" },
+  football: { label: "Football", emoji: "🏈" },
+};
+
+export const DEFAULT_NAMES = {
+  baseball: [
+    "Babe Ruth","Jackie Robinson","Hank Aaron","Willie Mays","Ted Williams","Lou Gehrig","Mickey Mantle","Derek Jeter","Ichiro Suzuki","Albert Pujols",
+    "Nolan Ryan","Sandy Koufax","Pedro Martínez","Clayton Kershaw","Greg Maddux","Randy Johnson","Mariano Rivera","Shohei Ohtani","Mike Trout","Mookie Betts",
+    "Yogi Berra","Johnny Bench","Roberto Clemente","Cal Ripken Jr.","Ken Griffey Jr.","Barry Bonds","David Ortiz","Tony Gwynn","Stan Musial","Honus Wagner",
+    "Joe DiMaggio","Satchel Paige","Walter Johnson","Cy Young","Ozzie Smith","Ryne Sandberg","Chipper Jones","Jeff Bagwell","Craig Biggio","George Brett",
+    "Paul Molitor","Frank Thomas","Vladimir Guerrero","Adrián Beltré","Carlos Beltrán","Bryce Harper","Juan Soto","Freddie Freeman","Buck O'Neil","Branch Rickey",
+    "Vin Scully","Harry Caray","Bob Uecker","Bill James","Billy Beane","Theo Epstein","Joe Torre","Dusty Baker"
+  ],
+  basketball: [
+    "Michael Jordan","LeBron James","Kobe Bryant","Magic Johnson","Larry Bird","Kareem Abdul-Jabbar","Wilt Chamberlain","Bill Russell","Shaquille O'Neal","Tim Duncan",
+    "Stephen Curry","Kevin Durant","Giannis Antetokounmpo","Nikola Jokić","Hakeem Olajuwon","Dirk Nowitzki","Charles Barkley","Karl Malone","John Stockton","Scottie Pippen",
+    "Dwyane Wade","Allen Iverson","Kevin Garnett","Isiah Thomas","Julius Erving","Oscar Robertson","Jerry West","Elgin Baylor","David Robinson","Moses Malone",
+    "Patrick Ewing","Reggie Miller","Ray Allen","Chris Paul","Kawhi Leonard","Luka Dončić","Jayson Tatum","Sue Bird","Diana Taurasi","Candace Parker"
+  ],
+  football: [
+    "Tom Brady","Joe Montana","Jerry Rice","Jim Brown","Walter Payton","Barry Sanders","Emmitt Smith","Lawrence Taylor","Peyton Manning","John Elway",
+    "Dan Marino","Brett Favre","Aaron Rodgers","Patrick Mahomes","Johnny Unitas","Bart Starr","Terry Bradshaw","Roger Staubach","Steve Young","Deion Sanders",
+    "Ronnie Lott","Ray Lewis","Ed Reed","Troy Polamalu","Randy Moss","Terrell Owens","Calvin Johnson","Larry Fitzgerald","Adrian Peterson","LaDainian Tomlinson",
+    "Marshall Faulk","Bo Jackson","Reggie White","Bruce Smith","Dick Butkus","J.J. Watt","Aaron Donald","Rob Gronkowski","Travis Kelce","Emlen Tunnell"
+  ],
+};
+
+const defaultRoster = (sport) => (DEFAULT_NAMES[sport] || DEFAULT_NAMES.baseball).map(makeSignature);
 
 // Lighting presets
 export const LIGHTING_PRESETS = {
@@ -27,7 +50,7 @@ export const LIGHTING_PRESETS = {
     directionalPosition: [3, 3, 2]
   },
   softbox: {
-    name: "Softbox", 
+    name: "Softbox",
     description: "Soft, diffused lighting for product photography",
     environment: "city",
     ambientIntensity: 0.8,
@@ -44,7 +67,7 @@ export const LIGHTING_PRESETS = {
   },
   cool: {
     name: "Cool",
-    description: "Cool-toned lighting for modern aesthetics", 
+    description: "Cool-toned lighting for modern aesthetics",
     environment: "dawn",
     ambientIntensity: 0.5,
     directionalIntensity: 1.0,
@@ -70,9 +93,13 @@ export const LIGHTING_PRESETS = {
 
 let toastCounter = 0;
 
-export const useSigStore = create((set, get) => ({
-  // Existing state
-  signatures: DEFAULT_NAMES.map(makeSignature),
+export const useSigStore = create(persist((set, get) => ({
+  // Active sport + its working roster. Inactive sports keep their state in
+  // `benches` and swap in/out on sport change.
+  sport: "baseball",
+  signatures: defaultRoster("baseball"),
+  benches: {},
+
   shuffleSeed: "opening-day", // stable default so the first render is reproducible
   autoRotate: true,
   roughness: 0.6,
@@ -91,6 +118,27 @@ export const useSigStore = create((set, get) => ({
   themeMode: localStorage.getItem(THEME_KEY) || "system", // "system" | "light" | "dark"
   accent: localStorage.getItem(ACCENT_KEY) || "sky",      // accent color name
 
+  // Sport switching: stash the current workspace, restore (or seed) the next
+  setSport: (next) => set((s) => {
+    if (next === s.sport || !SPORTS[next]) return {};
+    const benches = {
+      ...s.benches,
+      [s.sport]: {
+        signatures: s.signatures,
+        currentProjectId: s.currentProjectId,
+        currentProjectName: s.currentProjectName,
+      },
+    };
+    const bench = benches[next] || {};
+    return {
+      sport: next,
+      benches,
+      signatures: bench.signatures?.length ? bench.signatures : defaultRoster(next),
+      currentProjectId: bench.currentProjectId || null,
+      currentProjectName: bench.currentProjectName || "",
+    };
+  }),
+
   // Signature methods
   addSignature: (name) => set((s) => ({ signatures: [makeSignature(name), ...s.signatures] })),
   toggleSignature: (id) => set((s) => ({
@@ -100,7 +148,7 @@ export const useSigStore = create((set, get) => ({
     signatures: s.signatures.filter(sig => sig.id !== id)
   })),
   clearAllSignatures: () => set({ signatures: [] }),
-  resetSignatures: () => set({ signatures: DEFAULT_NAMES.map(makeSignature) }),
+  resetSignatures: () => set((s) => ({ signatures: defaultRoster(s.sport) })),
 
   // Theme + accent methods
   setThemeMode: (mode) => {
@@ -130,16 +178,16 @@ export const useSigStore = create((set, get) => ({
 
   // Project management methods
   setProjects: (projects) => set({ projects }),
-  setCurrentProject: (projectId, projectName) => set({ 
-    currentProjectId: projectId, 
-    currentProjectName: projectName 
+  setCurrentProject: (projectId, projectName) => set({
+    currentProjectId: projectId,
+    currentProjectName: projectName
   }),
-  clearCurrentProject: () => set({ 
-    currentProjectId: null, 
-    currentProjectName: "" 
+  clearCurrentProject: () => set({
+    currentProjectId: null,
+    currentProjectName: ""
   }),
   setLoadingProjects: (loading) => set({ isLoadingProjects: loading }),
-  
+
   // Load signatures from a project. Accepts the newer [{name, enabled}] shape
   // as well as the legacy array of plain name strings.
   loadProjectSignatures: (items) => {
@@ -161,4 +209,23 @@ export const useSigStore = create((set, get) => ({
     setTimeout(() => get().dismissToast(id), 4000);
   },
   dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter(t => t.id !== id) })),
+}), {
+  name: "fs_workspace",
+  version: 1,
+  storage: createJSONStorage(() => localStorage),
+  // Persist the workspace so a reload restores exactly what was on screen.
+  partialize: (s) => ({
+    sport: s.sport,
+    signatures: s.signatures,
+    benches: s.benches,
+    currentProjectId: s.currentProjectId,
+    currentProjectName: s.currentProjectName,
+    shuffleSeed: s.shuffleSeed,
+    autoRotate: s.autoRotate,
+    roughness: s.roughness,
+    metalness: s.metalness,
+    currentPreset: s.currentPreset,
+    themeMode: s.themeMode,
+    accent: s.accent,
+  }),
 }));

@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Calendar, Trash2, FolderOpen, RefreshCw, AlertCircle } from "lucide-react";
-import { useSigStore } from "../../store/sigStore";
+import { useSigStore, SPORTS } from "../../store/sigStore";
 import { getUserProjects, deleteProject, getUserId } from "../../services/projectService";
 import Dialog from "../ui/Dialog";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   const {
@@ -16,6 +17,7 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   } = useSigStore();
 
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null); // {id, name}
   const [loadError, setLoadError] = useState("");
 
   const loadProjects = useCallback(async () => {
@@ -37,8 +39,6 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   }, [isOpen, loadProjects]);
 
   const handleDelete = async (projectId, projectName) => {
-    if (!confirm(`Delete "${projectName}"? This cannot be undone.`)) return;
-
     setDeletingId(projectId);
     try {
       await deleteProject(projectId);
@@ -114,6 +114,7 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span aria-hidden="true">{(SPORTS[project.sport] || SPORTS.baseball).emoji}</span>
                       <h3 className="font-semibold text-app truncate">
                         {project.projectName}
                       </h3>
@@ -139,7 +140,7 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
                   </div>
 
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleDelete(project.id, project.projectName); }}
+                    onClick={(e) => { e.stopPropagation(); setConfirmDelete({ id: project.id, name: project.projectName }); }}
                     disabled={deletingId === project.id}
                     className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 disabled:opacity-50 flex-shrink-0"
                     title="Delete project"
@@ -157,6 +158,15 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={() => handleDelete(confirmDelete.id, confirmDelete.name)}
+        title="Delete project?"
+        message={confirmDelete ? `"${confirmDelete.name}" will be permanently deleted from the cloud. This cannot be undone.` : ""}
+        confirmLabel="Delete"
+      />
     </Dialog>
   );
 }

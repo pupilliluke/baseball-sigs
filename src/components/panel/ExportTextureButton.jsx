@@ -7,13 +7,14 @@ const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-cente
 
 export default function ExportTextureButton({ canvas }) {
   const pushToast = useSigStore((s) => s.pushToast);
+  const sport = useSigStore((s) => s.sport);
 
   function downloadTexture() {
     if (!canvas) return;
     const url = canvas.toDataURL("image/png");
     const a = document.createElement("a");
     a.href = url;
-    a.download = "baseball_signatures_texture.png";
+    a.download = `${sport}_signatures_texture.png`;
     a.click();
     pushToast("Texture PNG downloaded");
   }

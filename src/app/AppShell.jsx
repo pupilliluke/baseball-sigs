@@ -57,7 +57,7 @@ export default function AppShell() {
           </div>
           <div>
              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Collin's Signatures</h1>
-            <p className="text-muted text-sm">Design a signed baseball • Real-time 3D • Export & share</p>
+            <p className="text-muted text-sm">Signed baseballs, basketballs & footballs • Real-time 3D • Export & share</p>
           </div>
         </div>
         <nav className="flex gap-1">

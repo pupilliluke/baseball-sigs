@@ -6,6 +6,7 @@ import Dialog from "../ui/Dialog";
 
 export default function SaveProjectDialog({ isOpen, onClose }) {
   const {
+    sport,
     signatures,
     currentProjectId,
     currentProjectName,
@@ -41,6 +42,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
     // signatureNames field (enabled-only) for older documents/readers.
     const payload = {
       projectName: name,
+      sport,
       signatureNames: signatures.filter(s => s.enabled).map(s => s.name),
       signatures: signatures.map(s => ({ name: s.name, enabled: s.enabled })),
     };
