@@ -81,6 +81,8 @@ src/
 │   │   ├── SpinningBaseball.jsx    # 3D baseball component
 │   │   └── Stage.jsx               # Three.js stage setup
 │   └── ui/
+│       ├── Dialog.jsx              # Shared modal shell
+│       ├── Toaster.jsx             # Toast notifications
 │       ├── ThemeMenu.jsx           # Theme selection
 │       └── Toolbar.jsx             # Main toolbar
 ├── hooks/
@@ -105,8 +107,29 @@ This application uses Firebase for project storage. To set up Firebase:
 
 1. Create a Firebase project at https://console.firebase.google.com
 2. Enable Firestore Database
-3. Update the Firebase configuration in `src/lib/firebase.js`
+3. Update the Firebase configuration in `src/lib/firebase.js` (or override via `VITE_FIREBASE_*` env vars, see `.env.example`)
 4. Configure Firestore security rules in `firestore.rules`
+
+## Deployment
+
+Hosting deploys automatically via GitHub Actions on every push to `main`
+(`.github/workflows/firebase-hosting-merge.yml` builds with Node 22 and deploys
+the `dist/` folder). Pull requests get preview channels.
+
+Manual deploys:
+
+```bash
+npm run build
+npx firebase-tools deploy --only hosting
+```
+
+Firestore rules and indexes are deployed separately when they change:
+
+```bash
+npx firebase-tools deploy --only firestore
+```
+
+Live site: https://baseball-sigs.web.app
 
 ## Contributing
 

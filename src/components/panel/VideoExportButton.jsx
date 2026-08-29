@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Video, Square, Download } from "lucide-react";
+import { useSigStore } from "../../store/sigStore";
 
 export default function VideoExportButton() {
+  const pushToast = useSigStore((s) => s.pushToast);
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const recorderRef = useRef(null);
@@ -48,14 +50,16 @@ export default function VideoExportButton() {
         a.click();
         URL.revokeObjectURL(url);
         setIsProcessing(false);
+        pushToast("Video downloaded");
       };
 
       recorderRef.current = recorder;
       recorder.start();
       setIsRecording(true);
+      pushToast("Recording — orbit the ball, then press Stop", "info");
     } catch (error) {
       console.error("Failed to start recording:", error);
-      alert("Failed to start recording. Please try again.");
+      pushToast("Couldn't start recording in this browser", "error");
     }
   };
 
@@ -69,7 +73,7 @@ export default function VideoExportButton() {
       recorderRef.current = null;
     } catch (error) {
       console.error("Failed to stop recording:", error);
-      alert("Failed to export video. Please try again.");
+      pushToast("Failed to export video — try again", "error");
       setIsProcessing(false);
     }
   };

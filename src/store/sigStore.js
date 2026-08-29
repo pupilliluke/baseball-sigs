@@ -68,10 +68,12 @@ export const LIGHTING_PRESETS = {
   }
 };
 
+let toastCounter = 0;
+
 export const useSigStore = create((set, get) => ({
   // Existing state
   signatures: DEFAULT_NAMES.map(makeSignature),
-  shuffleSeed: Math.random().toString(36).slice(2),
+  shuffleSeed: "opening-day", // stable default so the first render is reproducible
   autoRotate: true,
   roughness: 0.6,
   metalness: 0.05,
@@ -120,6 +122,9 @@ export const useSigStore = create((set, get) => ({
   setRoughness: (v) => set({ roughness: Math.min(1, Math.max(0, v)) }),
   setMetalness: (v) => set({ metalness: Math.min(1, Math.max(0, v)) }),
 
+  // Re-seed the signature layout for a fresh arrangement
+  shuffleLayout: () => set({ shuffleSeed: Math.random().toString(36).slice(2) }),
+
   // Lighting preset methods
   setPreset: (presetKey) => set({ currentPreset: presetKey }),
 
@@ -135,13 +140,25 @@ export const useSigStore = create((set, get) => ({
   }),
   setLoadingProjects: (loading) => set({ isLoadingProjects: loading }),
   
-  // Load signatures from a project
-  loadProjectSignatures: (signatureNames) => {
-    const signatures = signatureNames.map(name => ({ 
-      id: `${Date.now()}_${Math.random().toString(36).slice(2)}`, 
-      name, 
-      enabled: true 
-    }));
+  // Load signatures from a project. Accepts the newer [{name, enabled}] shape
+  // as well as the legacy array of plain name strings.
+  loadProjectSignatures: (items) => {
+    const signatures = (items || [])
+      .map((item) => {
+        const name = typeof item === "string" ? item : item?.name;
+        const enabled = typeof item === "string" ? true : item?.enabled !== false;
+        return name ? { ...makeSignature(name), enabled } : null;
+      })
+      .filter(Boolean);
     set({ signatures });
   },
+
+  // Toast notifications
+  toasts: [],
+  pushToast: (message, type = "success") => {
+    const id = ++toastCounter;
+    set((s) => ({ toasts: [...s.toasts, { id, message, type }] }));
+    setTimeout(() => get().dismissToast(id), 4000);
+  },
+  dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter(t => t.id !== id) })),
 }));

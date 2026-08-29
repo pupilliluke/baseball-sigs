@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useSigStore } from "../store/sigStore";
+import Toaster from "../components/ui/Toaster";
 
 export default function AppShell() {
   const { themeMode, accent } = useSigStore();
@@ -45,19 +46,18 @@ export default function AppShell() {
       <div className="pointer-events-none fixed inset-0 -z-10 [mask-image:radial-gradient(1000px_500px_at_50%_-10%,black,transparent)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent)]" />
 
       {/* Header */}
-      <header className="max-w-7xl mx-auto px-4 pt-6 pb-3 flex items-center justify-between">
+      <header className="max-w-7xl mx-auto px-4 pt-6 pb-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
            <div className="h-10 w-10 rounded-2xl border grid place-items-center"
              style={{
                background: "color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 20%, transparent)",
                borderColor: "color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent)"
-             }}>            
-             <span className="font-bold text-accent">FS</span>
+             }}>
+             <span className="text-xl" aria-hidden="true">⚾</span>
           </div>
           <div>
-             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Signed Baseball Studio</h1>
-            <p className="text-muted text-sm">Procedural leather • Real‑time 3D • Pro UI</p>
-
+             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Collin's Signatures</h1>
+            <p className="text-muted text-sm">Design a signed baseball • Real-time 3D • Export & share</p>
           </div>
         </div>
         <nav className="flex gap-1">
@@ -71,10 +71,10 @@ export default function AppShell() {
               to={to}
               end
               className={({ isActive }) =>
-                `px-3 py-2 rounded-xl border ${
+                `px-3 py-2 rounded-xl border transition ${
                   isActive
-                    ? `px-3 py-2 rounded-xl border btn-glass ${isActive ? "outline outline-1 border-accent" : ""}`
-                    : "bg-white/5 border-white/10 hover:bg-white/10"
+                    ? "btn-glass border-accent text-accent font-medium"
+                    : "border-transparent text-muted hover:text-app hover:bg-black/5 dark:hover:bg-white/10"
                 }`
               }
             >
@@ -90,14 +90,16 @@ export default function AppShell() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-4 pb-8 text-sm text-white/60 flex items-center justify-between">
+      <footer className="max-w-7xl mx-auto px-4 pb-8 text-sm text-muted flex items-center justify-between">
         <span>
-          © {new Date().getFullYear()} Flash-Stats — Demo Studio
+          © {new Date().getFullYear()} Collin's Signatures
         </span>
         <span className="hidden sm:inline">
-          Built with React • Tailwind • R3F • drei • Zustand • Motion • Zod
+          Built with React • Tailwind • Three.js • Zustand • Motion
         </span>
       </footer>
+
+      <Toaster />
     </div>
   );
 }

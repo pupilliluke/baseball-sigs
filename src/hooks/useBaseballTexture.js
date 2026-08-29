@@ -1,29 +1,41 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { drawBaseballTexture } from "../lib/drawBaseballTexture";
+import { drawBaseballTexture, SIGNATURE_FONT_PROBES } from "../lib/drawBaseballTexture";
 
 export function useBaseballTexture(signatures, seedStr) {
-  const canvasRef = useRef(null);
-  const textureRef = useRef(null);
+  // Canvas + texture are created once, eagerly, so the texture is available on
+  // the very first render (a ref-based texture would never trigger a re-render).
+  const [{ canvas, texture }] = useState(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 2048;
+    canvas.height = 1024; // 2:1 equirectangular UV
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 8;
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    return { canvas, texture };
+  });
 
-  if (!canvasRef.current) {
-    const c = document.createElement("canvas");
-    c.width = 2048; c.height = 1024; // 2:1 UV
-    canvasRef.current = c;
-  }
+  // The signature fonts are web fonts; redraw once they finish loading so the
+  // first paint (with fallback fonts) gets replaced.
+  const [fontsReady, setFontsReady] = useState(false);
+  useEffect(() => {
+    let active = true;
+    if (!document.fonts?.load) {
+      setFontsReady(true);
+      return;
+    }
+    Promise.all(SIGNATURE_FONT_PROBES.map((f) => document.fonts.load(f)))
+      .catch(() => {})
+      .finally(() => active && setFontsReady(true));
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
-    drawBaseballTexture(canvasRef.current, signatures, seedStr);
-    if (!textureRef.current) {
-      const tex = new THREE.CanvasTexture(canvasRef.current);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      tex.anisotropy = 8;
-      tex.wrapS = THREE.ClampToEdgeWrapping; tex.wrapT = THREE.ClampToEdgeWrapping;
-      textureRef.current = tex;
-    } else {
-      textureRef.current.needsUpdate = true;
-    }
-  }, [signatures, seedStr]);
+    drawBaseballTexture(canvas, signatures, seedStr);
+    texture.needsUpdate = true;
+  }, [canvas, texture, signatures, seedStr, fontsReady]);
 
-  return { texture: textureRef.current, canvas: canvasRef.current };
+  return { texture, canvas };
 }

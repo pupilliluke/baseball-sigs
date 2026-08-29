@@ -11,9 +11,12 @@ export default function SpinningBaseball({ texture }) {
   });
 
   return (
-    <mesh ref={meshRef} castShadow receiveShadow>
-      <sphereGeometry args={[1, 192, 192]} />
-      <meshStandardMaterial map={texture} roughness={roughness} metalness={metalness} />
-    </mesh>
+    // Slight tilt so the seams sweep diagonally instead of sitting level
+    <group rotation={[0.32, 0, -0.14]}>
+      <mesh ref={meshRef} castShadow receiveShadow>
+        <sphereGeometry args={[1, 128, 128]} />
+        <meshStandardMaterial map={texture} roughness={roughness} metalness={metalness} />
+      </mesh>
+    </group>
   );
 }

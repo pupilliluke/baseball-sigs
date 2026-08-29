@@ -3,7 +3,7 @@ import { useSigStore } from "../../store/sigStore";
 import { Sun, Moon, Monitor, Droplets } from "lucide-react";
 
 const btn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
-const item = "px-3 py-2 rounded-lg hover:bg-white/10 cursor-pointer flex items-center gap-2";
+const item = "px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center gap-2";
 const dot  = "h-3 w-3 rounded-full";
 
 export default function ThemeMenu(){
@@ -26,15 +26,18 @@ export default function ThemeMenu(){
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 w-56 rounded-xl bg-[color-mix(in_hsl,white_10%,transparent)] border border-white/10 backdrop-blur-xl p-2 right-0">
-          <div className="text-xs text-white/60 px-2 pb-1">Mode</div>
+        <div
+          className="absolute z-50 mt-2 w-56 rounded-xl border shadow-lg backdrop-blur-xl p-2 right-0 text-app"
+          style={{ background: "var(--surface)", borderColor: "var(--panel-border)" }}
+        >
+          <div className="text-xs text-muted px-2 pb-1">Mode</div>
           <div className="grid gap-1 mb-2">
             <div className={item} onClick={()=>setThemeMode("system")}><Monitor className="h-4 w-4"/><span>System</span>{themeMode==="system" && <span className="ml-auto">✓</span>}</div>
             <div className={item} onClick={()=>setThemeMode("light")}><Sun className="h-4 w-4"/><span>Light</span>{themeMode==="light" && <span className="ml-auto">✓</span>}</div>
             <div className={item} onClick={()=>setThemeMode("dark")}><Moon className="h-4 w-4"/><span>Dark</span>{themeMode==="dark" && <span className="ml-auto">✓</span>}</div>
           </div>
 
-          <div className="text-xs text-white/60 px-2 pb-1">Accent</div>
+          <div className="text-xs text-muted px-2 pb-1">Accent</div>
           <div className="grid grid-cols-4 gap-2 px-2 pb-2">
             {["sky","emerald","violet","amber"].map(a => (
               <button key={a}

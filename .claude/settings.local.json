@@ -5,7 +5,11 @@
       "Bash(npm uninstall:*)",
       "Bash(npm install:*)",
       "Bash(move SIgnaturePanel.jsx SignaturePanel.jsx)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(gh auth:*)",
+      "Bash(tasklist)",
+      "Bash(powershell -Command \"Get-Process | Where-Object {$_.Name -like '*git*'} | Format-Table Name,Id,CPU -AutoSize\")",
+      "Read(//c/Users/lukel/SideProjects/baseball-sigs/$HOME/.claude/**)"
     ],
     "deny": []
   }

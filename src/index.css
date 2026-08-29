@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* The app toggles a .dark class on <html>; make Tailwind's dark: variant
+   follow that class instead of the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ==== Accent + Theme tokens (set by AppShell) ==== */
 :root {
   --accent-h: 200;  /* updated in AppShell */
@@ -70,4 +74,20 @@ input[type="range"] {
 }
 input[type="checkbox"] {
   accent-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
+
+/* Keyboard focus should be visible everywhere without adding per-element rings */
+:focus-visible {
+  outline: 2px solid hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent);
+}
+
+/* Slim, theme-aware scrollbars for the panel lists */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 35%, transparent) transparent;
 }

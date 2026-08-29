@@ -8,11 +8,12 @@ import { db } from "../lib/firebase";
 const coll = () => collection(db, "signature-projects");
 
 /** Create a brand new list (does not overwrite older ones) */
-export async function createProject({ userId, projectName, signatureNames }) {
+export async function createProject({ userId, projectName, signatureNames, signatures }) {
   const ref = await addDoc(coll(), {
     userId,
     projectName,
     signatureNames,
+    ...(signatures !== undefined ? { signatures } : {}),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -20,11 +21,12 @@ export async function createProject({ userId, projectName, signatureNames }) {
 }
 
 /** Update an existing list by id */
-export async function updateProject({ projectId, projectName, signatureNames }) {
+export async function updateProject({ projectId, projectName, signatureNames, signatures }) {
   const ref = doc(db, "signature-projects", projectId);
   await updateDoc(ref, {
     ...(projectName !== undefined ? { projectName } : {}),
     ...(signatureNames !== undefined ? { signatureNames } : {}),
+    ...(signatures !== undefined ? { signatures } : {}),
     updatedAt: serverTimestamp(),
   });
 }
