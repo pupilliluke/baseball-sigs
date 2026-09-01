@@ -27,8 +27,8 @@ export default function Toaster() {
             style={{ background: "var(--surface)", borderColor: "var(--panel-border)" }}
             role="status"
           >
-            {ICONS[toast.type] || ICONS.info}
-            <span className="truncate">{toast.message}</span>
+            <span className="flex-shrink-0">{ICONS[toast.type] || ICONS.info}</span>
+            <span className="leading-snug">{toast.message}</span>
             <button
               onClick={() => dismissToast(toast.id)}
               className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition flex-shrink-0"

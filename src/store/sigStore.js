@@ -205,14 +205,31 @@ export const useSigStore = create(persist((set, get) => ({
   user: null,
   authReady: false,
   setAuthUser: (user) => set((s) => {
-    // Whenever the signed-in identity changes, drop the previous account's
-    // cached project list so one account can never see another's entries.
-    const identityChanged = (s.user?.uid || null) !== (user?.uid || null);
-    return {
-      user,
-      authReady: true,
-      ...(identityChanged ? { projects: [], currentProjectId: null, currentProjectName: "" } : {}),
-    };
+    const prevUid = s.user?.uid || null;
+    const nextUid = user?.uid || null;
+
+    // First resolution after page load: adopt the identity without disturbing
+    // the workspace, so a reload keeps whatever was on screen.
+    if (!s.authReady) return { user, authReady: true };
+    if (prevUid === nextUid) return { user };
+
+    // Signing out, or switching to a different account, must not leave the
+    // previous account's design on the ball or its projects in the list.
+    if (prevUid) {
+      return {
+        user,
+        projects: [],
+        currentProjectId: null,
+        currentProjectName: "",
+        signatures: defaultRoster(s.sport),
+        benches: {},
+      };
+    }
+
+    // Guest signing in: keep their in-progress design (it's their own work,
+    // and their guest projects are migrated into the account), but drop the
+    // guest project list so the account's own list loads fresh.
+    return { user, projects: [] };
   }),
 
   // Global "My Projects" dialog (openable from anywhere, e.g. after sign-in)

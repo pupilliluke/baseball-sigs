@@ -6,7 +6,7 @@ import { useGoogleSignIn } from "../../hooks/useGoogleSignIn";
 import GoogleIcon from "./GoogleIcon";
 
 export default function AuthButton() {
-  const { user, authReady, pushToast, clearCurrentProject } = useSigStore();
+  const { user, authReady, pushToast } = useSigStore();
   const { signIn, busy } = useGoogleSignIn();
   const [signingOut, setSigningOut] = useState(false);
 
@@ -14,8 +14,7 @@ export default function AuthButton() {
     setSigningOut(true);
     try {
       await signOutUser();
-      clearCurrentProject();
-      pushToast("Signed out", "info");
+      pushToast("Signed out — workspace cleared. Your saved projects are safe in your account.", "info");
     } catch (error) {
       console.error("Sign-out failed:", error);
       pushToast("Sign-out failed — try again", "error");
