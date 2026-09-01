@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, Trash2, FolderOpen, RefreshCw, AlertCircle } from "lucide-react";
 import { useSigStore, SPORTS } from "../../store/sigStore";
-import { getUserProjects, deleteProject, getUserId } from "../../services/projectService";
+import { getUserProjects, deleteProject, resolveUserId } from "../../services/projectService";
 import Dialog from "../ui/Dialog";
 import ConfirmDialog from "../ui/ConfirmDialog";
 
@@ -38,7 +38,7 @@ export default function ProjectListDialog() {
     setLoadingProjects(true);
     setLoadError("");
     try {
-      const list = await getUserProjects({ userId: getUserId() });
+      const list = await getUserProjects({ userId: await resolveUserId() });
       setProjects(list);
     } catch (error) {
       console.error("Error loading projects:", error);

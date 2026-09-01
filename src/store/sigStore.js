@@ -204,7 +204,16 @@ export const useSigStore = create(persist((set, get) => ({
   // Auth state (managed by Firebase; not persisted here)
   user: null,
   authReady: false,
-  setAuthUser: (user) => set({ user, authReady: true }),
+  setAuthUser: (user) => set((s) => {
+    // Whenever the signed-in identity changes, drop the previous account's
+    // cached project list so one account can never see another's entries.
+    const identityChanged = (s.user?.uid || null) !== (user?.uid || null);
+    return {
+      user,
+      authReady: true,
+      ...(identityChanged ? { projects: [], currentProjectId: null, currentProjectName: "" } : {}),
+    };
+  }),
 
   // Global "My Projects" dialog (openable from anywhere, e.g. after sign-in)
   showProjectsDialog: false,

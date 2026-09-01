@@ -22,5 +22,9 @@ export const db = getFirestore(app);
 // Auth: Google sign-in makes projects follow the account across devices
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+// Always show the account chooser. Without this, Google silently reuses the
+// browser's current session, so "switching accounts" signs you back in as the
+// same user — and you keep seeing the same project list.
+googleProvider.setCustomParameters({ prompt: "select_account" });
 
 export default app;
