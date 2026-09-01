@@ -1,17 +1,56 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useSigStore } from "../store/sigStore";
 import Toaster from "../components/ui/Toaster";
 import AuthButton from "../components/ui/AuthButton";
 import ProjectListDialog from "../components/project/ProjectListDialog";
 import WelcomeDialog from "../components/ui/WelcomeDialog";
+import ScrollLockedHero from "../components/ui/ScrollLockedHero";
+
+const INTRO_KEY = "fs_intro_seen";
+const INTRO_VIDEO = "https://raw.githubusercontent.com/gughigug/metro-hero-assets/main/Subway_doors_open_to_city_202608242331.mp4";
 import { watchAuth } from "../services/authService";
+import { getUserProjects, getAnonymousUserId } from "../services/projectService";
 
 export default function AppShell() {
-  const { themeMode, accent, setAuthUser } = useSigStore();
+  const { themeMode, accent, user, authReady, setAuthUser, setProjects } = useSigStore();
+  const uid = user?.uid || null;
+
+  // Intro gate: once per browser session, so a refresh mid-session goes
+  // straight to the studio instead of replaying the reveal.
+  const [introDone, setIntroDone] = useState(() => {
+    try { return sessionStorage.getItem(INTRO_KEY) === "1"; } catch { return true; }
+  });
+  const finishIntro = () => {
+    try { sessionStorage.setItem(INTRO_KEY, "1"); } catch { /* private mode */ }
+    setIntroDone(true);
+  };
 
   // Track the Firebase auth session (restores signed-in state on reload)
   useEffect(() => watchAuth(setAuthUser), [setAuthUser]);
+
+
+  // The project list follows whoever is signed in. Doing this reactively
+  // (instead of only inside the sign-in handler) means logging out or
+  // switching accounts always reloads the right owner's projects, and a
+  // response that arrives after another identity change is discarded.
+  useEffect(() => {
+    if (!authReady) return;
+    let cancelled = false;
+    // Derive the owner from the identity this effect is keyed on, so the
+    // request can never be for a different account than the one it reacts to.
+    const ownerId = uid || getAnonymousUserId();
+    (async () => {
+      try {
+        const list = await getUserProjects({ userId: ownerId });
+        if (!cancelled) setProjects(list);
+      } catch (error) {
+        console.error("Could not load projects for the current account:", error);
+        if (!cancelled) setProjects([]);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authReady, uid, setProjects]);
 
   // Dark/light/system mode handling
   useEffect(() => {
@@ -56,13 +95,7 @@ export default function AppShell() {
 
       {/* Header */}
       <header className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-4 flex flex-wrap items-center justify-between gap-3">
-        <NavLink to="/" className="flex items-center gap-2.5 group">
-          <div
-            className="h-9 w-9 rounded-xl grid place-items-center transition group-hover:scale-105"
-            style={{ background: "color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 14%, transparent)" }}
-          >
-            <span className="text-lg" aria-hidden="true">⚾</span>
-          </div>
+        <NavLink to="/" className="hover:opacity-80 transition">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Collin's Signatures</h1>
         </NavLink>
         <div className="flex items-center gap-3 flex-wrap">
@@ -105,7 +138,12 @@ export default function AppShell() {
 
       <Toaster />
       <ProjectListDialog />
-      <WelcomeDialog />
+      {/* Hold the sign-in prompt until the intro has opened the studio */}
+      {introDone && <WelcomeDialog />}
+
+      {!introDone && (
+        <ScrollLockedHero videoSrc={INTRO_VIDEO} onUnlock={finishIntro} />
+      )}
     </div>
   );
 }

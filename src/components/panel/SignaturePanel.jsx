@@ -117,7 +117,7 @@ export default function SignaturesPanel({ textureCanvas }) {
           value={draft}
           onChange={e => setDraft(e.target.value)}
           onKeyDown={e => e.key === "Enter" && onAdd()}
-          placeholder="Add a name (e.g., Shohei Ohtani)"
+          placeholder="Add a name…"
           className="flex-1 min-w-0 input-base px-3.5 py-2.5 rounded-xl outline-none placeholder:text-muted focus:ring-2 ring-accent border text-sm"
           aria-label="Add signature"
         />
@@ -177,7 +177,7 @@ export default function SignaturesPanel({ textureCanvas }) {
                 </label>
                 <button
                   onClick={() => removeSignature(sig.id)}
-                  className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 opacity-40 group-hover:opacity-100 transition"
+                  className="reveal-on-hover p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 opacity-40 group-hover:opacity-100 transition"
                   aria-label={`Remove ${sig.name}`}
                 >
                   <Trash2 className="h-4 w-4 text-muted" />

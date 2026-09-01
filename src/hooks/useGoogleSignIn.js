@@ -11,7 +11,7 @@ export const WELCOME_SEEN_KEY = "fs_welcome_done";
  * Returns { signIn, busy }; signIn resolves true on success.
  */
 export function useGoogleSignIn() {
-  const { pushToast, setProjects, openProjectsDialog } = useSigStore();
+  const { pushToast, openProjectsDialog } = useSigStore();
   const [busy, setBusy] = useState(false);
 
   const signIn = async () => {
@@ -23,13 +23,14 @@ export function useGoogleSignIn() {
       if (migrated > 0) {
         pushToast(`Moved ${migrated} project${migrated === 1 ? "" : "s"} from this browser into your account`, "info");
       }
-      // Show their saved designs right away
+      // Show their saved designs right away. AppShell owns the project list
+      // state (it reloads on every identity change); this only decides
+      // whether the account has anything worth popping the dialog for.
       try {
         const list = await getUserProjects({ userId: user.uid });
-        setProjects(list);
         if (list.length > 0) openProjectsDialog();
       } catch (error) {
-        console.error("Could not prefetch projects after sign-in:", error);
+        console.error("Could not check for saved projects after sign-in:", error);
       }
       setBusy(false);
       return true;

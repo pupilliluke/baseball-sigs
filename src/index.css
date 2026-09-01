@@ -149,6 +149,12 @@ input[type="range"]::-moz-range-thumb {
   scrollbar-color: color-mix(in hsl, var(--text) 25%, transparent) transparent;
 }
 
+/* Controls that fade in on hover must stay visible on touch devices,
+   where there is no hover to reveal them. */
+@media (hover: none) {
+  .reveal-on-hover { opacity: 1 !important; }
+}
+
 /* Stage hint that quietly gets out of the way */
 .fade-hint {
   animation: fadeHint 6s ease 1s forwards;
