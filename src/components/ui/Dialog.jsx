@@ -1,10 +1,16 @@
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AnimatePresence, motion as Motion } from "framer-motion";
 
 /**
  * Shared modal shell: theme-aware surface, backdrop + Escape dismissal,
  * enter/exit animation, and initial focus for keyboard users.
+ *
+ * Rendered through a portal to <body>: panels use backdrop-filter, which
+ * makes them a containing block for fixed-position descendants, so a dialog
+ * left in place would be trapped inside the panel instead of covering the
+ * viewport.
  */
 export default function Dialog({ open, onClose, title, children, maxWidth = "max-w-md" }) {
   const contentRef = useRef(null);
@@ -17,7 +23,7 @@ export default function Dialog({ open, onClose, title, children, maxWidth = "max
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <Motion.div
@@ -55,6 +61,7 @@ export default function Dialog({ open, onClose, title, children, maxWidth = "max
           </Motion.div>
         </Motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

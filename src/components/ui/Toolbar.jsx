@@ -14,7 +14,10 @@ export default function Toolbar(){
   } = useSigStore();
 
   return (
-    <div className="flex flex-wrap gap-1.5 panel-elevated border rounded-2xl p-1.5 justify-center lg:justify-start items-center">
+    // relative z-30 keeps the theme dropdown above the stage below it: both
+    // are backdrop-filtered stacking contexts, so without this the later
+    // sibling (the stage) paints over the menu.
+    <div className="relative z-30 flex flex-wrap gap-1.5 panel-elevated border rounded-2xl p-1.5 justify-center lg:justify-start items-center">
       {/* Sport switcher */}
       <div
         className="inline-flex rounded-xl p-0.5 gap-0.5"

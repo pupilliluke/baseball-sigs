@@ -27,7 +27,9 @@ export default function ThemeMenu(){
 
       {open && (
         <div
-          className="absolute z-50 mt-2 w-56 rounded-xl border shadow-lg backdrop-blur-xl p-2 right-0 text-app"
+          // Anchored left on narrow screens (right-aligning would push it off
+          // the left edge) and capped so it can never exceed the viewport.
+          className="absolute z-50 mt-2 w-56 max-w-[calc(100vw-1.5rem)] rounded-xl border shadow-lg backdrop-blur-xl p-2 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-0 text-app"
           style={{ background: "var(--surface)", borderColor: "var(--panel-border)" }}
         >
           <div className="text-xs text-muted px-2 pb-1">Mode</div>
