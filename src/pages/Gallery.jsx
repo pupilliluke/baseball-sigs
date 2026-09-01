@@ -6,8 +6,8 @@ import PresetPreview from "../components/gallery/PresetPreview";
 
 export default function Gallery(){
   const { currentPreset, setPreset, pushToast } = useSigStore();
-  const card = "rounded-2xl p-4 panel border";
-  const btn = "mt-3 px-3 py-2 rounded-xl border transition inline-flex items-center justify-center gap-2 btn-glass";
+  const card = "rounded-2xl p-4 panel-elevated border";
+  const btn = "mt-3 px-3 py-2 rounded-xl border transition inline-flex items-center justify-center gap-2 btn-glass text-sm";
 
   const applyPreset = (key, preset) => {
     setPreset(key);

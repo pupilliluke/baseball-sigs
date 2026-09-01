@@ -4,43 +4,57 @@
    follow that class instead of the OS preference. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ==== Accent + Theme tokens (set by AppShell) ==== */
+/* Register the runtime accent as a real Tailwind color so every utility —
+   including opacity modifiers like bg-accent/10 — works properly. */
+@theme inline {
+  --color-accent: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
+
+/* ==== Accent + Theme tokens (accent set by AppShell) ==== */
 :root {
   --accent-h: 200;  /* updated in AppShell */
   --accent-s: 90%;
   --accent-l: 60%;
 
-  /* Light defaults */
-  --surface: hsl(220 20% 98%);
-  --text: hsl(222 47% 11%);        /* deep black-ish for body text */
-  --muted: hsl(222 10% 40%);       /* medium-dark gray for secondary text */
-  --panel-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 4%, transparent);
-  --panel-border: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 18%, transparent);
+  /* Light: warm paper-white with near-opaque neutral surfaces */
+  --surface: hsl(40 30% 97%);
+  --text: hsl(224 25% 12%);
+  --muted: hsl(224 10% 42%);
+  --panel-bg: hsl(0 0% 100% / 0.72);
+  --panel-border: hsl(224 20% 12% / 0.08);
+  --shadow: 0 1px 2px hsl(224 30% 20% / 0.05), 0 10px 30px hsl(224 30% 20% / 0.07);
 
-  --btn-bg:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 10%, transparent);
-  --btn-bg-h: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 15%, transparent);
-  --btn-bg-a: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 20%, transparent);
-  --btn-br:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent);
+  --btn-bg:   hsl(224 20% 12% / 0.04);
+  --btn-bg-h: hsl(224 20% 12% / 0.08);
+  --btn-bg-a: hsl(224 20% 12% / 0.12);
+  --btn-br:   hsl(224 20% 12% / 0.10);
 
-  --input-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 6%, transparent);
-  --input-br: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 22%, transparent);
+  --input-bg: hsl(224 20% 12% / 0.04);
+  --input-br: hsl(224 20% 12% / 0.12);
 }
 
-/* Dark theme overrides */
+/* Dark: deep neutral blue-black */
 .dark {
-  --surface: hsl(220 26% 10%);
-  --text: hsl(0 0% 98%);
-  --panel-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 6%, transparent);
-  --panel-border: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 24%, transparent);
-  --muted: hsl(220 10% 70%);
+  --surface: hsl(224 22% 8%);
+  --text: hsl(40 25% 96%);
+  --muted: hsl(224 12% 64%);
+  --panel-bg: hsl(224 18% 12% / 0.82);
+  --panel-border: hsl(40 30% 95% / 0.08);
+  --shadow: 0 1px 2px hsl(0 0% 0% / 0.4), 0 14px 40px hsl(0 0% 0% / 0.35);
 
-  --btn-bg:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 10%, transparent);
-  --btn-bg-h: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 15%, transparent);
-  --btn-bg-a: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 20%, transparent);
-  --btn-br:   color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent);
+  --btn-bg:   hsl(40 30% 95% / 0.05);
+  --btn-bg-h: hsl(40 30% 95% / 0.10);
+  --btn-bg-a: hsl(40 30% 95% / 0.14);
+  --btn-br:   hsl(40 30% 95% / 0.12);
 
-  --input-bg: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 7%, transparent);
-  --input-br: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 26%, transparent);
+  --input-bg: hsl(0 0% 0% / 0.22);
+  --input-br: hsl(40 30% 95% / 0.12);
+}
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Utility layer to avoid repeating long arbitrary values */
@@ -50,30 +64,73 @@
   .text-muted { color: var(--muted); }
 
   .panel { background: var(--panel-bg); border-color: var(--panel-border); }
-  .btn-glass { 
-    background: var(--btn-bg); 
+  .panel-elevated {
+    background: var(--panel-bg);
+    border-color: var(--panel-border);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+  }
+
+  .btn-glass {
+    background: var(--btn-bg);
     border-color: var(--btn-br);
   }
   .btn-glass:hover { background: var(--btn-bg-h); }
   .btn-glass:active { background: var(--btn-bg-a); }
 
+  /* Quiet toolbar/button style: no border until you interact */
+  .btn-ghost {
+    color: var(--muted);
+    border-radius: 0.65rem;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .btn-ghost:hover { color: var(--text); background: var(--btn-bg-h); }
+  .btn-ghost:active { background: var(--btn-bg-a); }
+
   .input-base {
-    background: var(--input-bg); 
+    background: var(--input-bg);
     border-color: var(--input-br);
   }
 
-  .ring-accent { --tw-ring-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
-  .text-accent { color: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
-  .bg-accent { background: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
-  .border-accent { border-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l)); }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
 }
 
-/* Inputs: sliders & checkboxes pick up the accent */
-input[type="range"] {
-  accent-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
-}
+/* Checkboxes pick up the accent */
 input[type="checkbox"] {
   accent-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
+
+/* Refined range sliders: slim track, accent thumb */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: color-mix(in hsl, var(--text) 14%, transparent);
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  border: 2.5px solid var(--surface);
+  box-shadow: 0 1px 4px hsl(0 0% 0% / 0.35);
+}
+input[type="range"]::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  border: 2.5px solid var(--surface);
+  box-shadow: 0 1px 4px hsl(0 0% 0% / 0.35);
 }
 
 /* Keyboard focus should be visible everywhere without adding per-element rings */
@@ -89,5 +146,14 @@ input[type="checkbox"] {
 /* Slim, theme-aware scrollbars for the panel lists */
 * {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 35%, transparent) transparent;
+  scrollbar-color: color-mix(in hsl, var(--text) 25%, transparent) transparent;
+}
+
+/* Stage hint that quietly gets out of the way */
+.fade-hint {
+  animation: fadeHint 6s ease 1s forwards;
+}
+@keyframes fadeHint {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
 }

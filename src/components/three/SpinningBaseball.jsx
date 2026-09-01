@@ -12,19 +12,33 @@ const BALL_SHAPES = {
 
 export default function SpinningBall({ texture }) {
   const meshRef = useRef();
+  const floatRef = useRef();
   const { autoRotate, roughness, metalness, sport } = useSigStore();
   const shape = BALL_SHAPES[sport] || BALL_SHAPES.baseball;
 
-  useFrame((_, delta) => {
+  useFrame(({ clock }, delta) => {
     if (autoRotate && meshRef.current) meshRef.current.rotation.y += delta * 0.25;
+    // Gentle float keeps the scene feeling alive even when rotation is paused
+    if (floatRef.current) {
+      floatRef.current.position.y = Math.sin(clock.elapsedTime * 0.7) * 0.035;
+    }
   });
 
   return (
-    <group rotation={shape.tilt}>
-      <mesh ref={meshRef} castShadow receiveShadow scale={shape.scale}>
-        <sphereGeometry args={[1, 128, 128]} />
-        <meshStandardMaterial map={texture} roughness={roughness} metalness={metalness} />
-      </mesh>
+    <group ref={floatRef}>
+      <group rotation={shape.tilt}>
+        <mesh ref={meshRef} castShadow receiveShadow scale={shape.scale}>
+          <sphereGeometry args={[1, 128, 128]} />
+          {/* Clearcoat gives the leather a subtle finished sheen */}
+          <meshPhysicalMaterial
+            map={texture}
+            roughness={roughness}
+            metalness={metalness}
+            clearcoat={0.25}
+            clearcoatRoughness={0.55}
+          />
+        </mesh>
+      </group>
     </group>
   );
 }

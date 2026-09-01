@@ -1,20 +1,16 @@
 import React, { useState } from "react";
-import { Plus, Trash2, Upload, Save, Search, FolderOpen, X } from "lucide-react";
+import { Plus, Trash2, Upload, Download, Save, Search, FolderOpen, X } from "lucide-react";
 import { useSigStore } from "../../store/sigStore";
 import LabeledSlider from "./LabeledSlider";
 import ExportTextureButton from "./ExportTextureButton";
 import SaveProjectDialog from "../project/SaveProjectDialog";
-import ProjectListDialog from "../project/ProjectListDialog";
 import ConfirmDialog from "../ui/ConfirmDialog";
 
-const panel = "rounded-2xl p-4 flex flex-col h-full panel border";
-const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
-
+const ghost = "btn-ghost px-2.5 py-2 text-sm inline-flex items-center gap-1.5";
 
 export default function SignaturesPanel({ textureCanvas }) {
   const {
     sport,
-    setSport,
     signatures,
     addSignature,
     toggleSignature,
@@ -27,14 +23,12 @@ export default function SignaturesPanel({ textureCanvas }) {
     currentProjectId,
     currentProjectName,
     clearCurrentProject,
-    setCurrentProject,
-    loadProjectSignatures,
+    openProjectsDialog,
     pushToast,
   } = useSigStore();
   const [filter, setFilter] = useState("");
   const [draft, setDraft] = useState("");
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [showProjectList, setShowProjectList] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
 
   const shown = signatures.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()));
@@ -77,46 +71,32 @@ export default function SignaturesPanel({ textureCanvas }) {
     URL.revokeObjectURL(url);
   }
 
-  const handleLoadProject = (project) => {
-    if (project.sport && project.sport !== sport) setSport(project.sport);
-    setCurrentProject(project.id, project.projectName);
-    loadProjectSignatures(project.signatures || project.signatureNames || []);
-  };
-
   return (
-    <div className={panel}>
+    <div className="rounded-3xl p-5 flex flex-col h-full panel-elevated border">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-white/10 flex-shrink-0 gap-3">
+      <div className="flex items-start justify-between gap-3 flex-shrink-0">
         <div>
-          <div className="text-xl font-semibold tracking-tight">Signatures</div>
-          <div className="text-xs text-muted">Curate the roster and paint the leather</div>
+          <div className="text-lg font-bold tracking-tight">Signatures</div>
+          <div className="text-xs text-muted mt-0.5">Curate the roster and paint the leather</div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap justify-start sm:justify-end">
-          <button
-            onClick={() => setShowProjectList(true)}
-            className={`${glassBtn} text-sm`}
-            title="Load a saved project"
-          >
+        <div className="flex items-center gap-0.5">
+          <button onClick={openProjectsDialog} className={ghost} title="Load a saved project">
             <FolderOpen className="h-4 w-4" /> <span className="hidden sm:inline">Load</span>
           </button>
           <button
             onClick={() => setShowSaveDialog(true)}
-            className={`${glassBtn} text-sm`}
+            className={ghost}
             title="Save this roster as a project"
           >
             <Save className="h-4 w-4" /> <span className="hidden sm:inline">Save</span>
           </button>
-          <label className={`${glassBtn} text-sm cursor-pointer`} title="Import names from a JSON file">
-            <Upload className="h-4 w-4" /> <span className="hidden sm:inline">Import</span>
-            <input type="file" accept="application/json,.json" className="sr-only" onChange={onImport} />
-          </label>
         </div>
       </div>
 
       {/* Current project chip */}
       {currentProjectId && (
         <div className="mt-3 flex items-center gap-2 flex-shrink-0">
-          <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent text-xs font-medium max-w-full">
+          <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full bg-accent/12 text-accent text-xs font-medium max-w-full">
             <FolderOpen className="h-3 w-3 flex-shrink-0" />
             <span className="truncate">{currentProjectName}</span>
             <button
@@ -132,61 +112,43 @@ export default function SignaturesPanel({ textureCanvas }) {
       )}
 
       {/* Add signature */}
-      <div className="mt-4 grid grid-cols-3 gap-2 flex-shrink-0">
+      <div className="mt-4 flex gap-2 flex-shrink-0">
         <input
           value={draft}
           onChange={e => setDraft(e.target.value)}
           onKeyDown={e => e.key === "Enter" && onAdd()}
-          placeholder="Add a signature (e.g., Shohei Ohtani)"
-          className="col-span-2 input-base w-full px-3 py-2 rounded-xl outline-none placeholder:text-muted focus:ring-2 ring-accent border"
+          placeholder="Add a name (e.g., Shohei Ohtani)"
+          className="flex-1 min-w-0 input-base px-3.5 py-2.5 rounded-xl outline-none placeholder:text-muted focus:ring-2 ring-accent border text-sm"
           aria-label="Add signature"
         />
         <button
           onClick={onAdd}
           disabled={draft.trim().length < 2}
-          className="rounded-xl bg-accent text-white font-medium inline-flex items-center justify-center gap-2 px-3 py-2 hover:brightness-[1.05] active:brightness-[.95] disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="rounded-xl bg-accent text-white font-medium inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm hover:brightness-[1.05] active:brightness-[.95] disabled:opacity-40 disabled:cursor-not-allowed transition flex-shrink-0"
         >
           <Plus className="h-4 w-4" /> Add
         </button>
       </div>
 
-      {/* Filter and Controls */}
-      <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2 flex-shrink-0">
+      {/* Filter row */}
+      <div className="mt-2.5 flex items-center gap-2 flex-shrink-0">
         <div className="flex-1 relative">
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             value={filter}
             onChange={e => setFilter(e.target.value)}
             placeholder="Filter…"
-            className="pl-9 input-base w-full px-3 py-2 rounded-xl outline-none placeholder:text-muted focus:ring-2 ring-accent border"
+            className="pl-9 input-base w-full px-3.5 py-2 rounded-xl outline-none placeholder:text-muted focus:ring-2 ring-accent border text-sm"
             aria-label="Filter signatures"
           />
         </div>
-        <div className="flex items-center gap-2 justify-between sm:justify-end">
-          {signatures.length > 0 && (
-            <button
-              onClick={() => setConfirmClear(true)}
-              className="px-2 py-2 rounded-lg hover:bg-red-500/10 text-red-400 transition text-sm inline-flex items-center gap-1"
-              title="Clear all signatures"
-            >
-              <X className="h-4 w-4" />
-              <span>Clear</span>
-            </button>
-          )}
-          <div className="text-sm text-muted whitespace-nowrap">
-            Showing <span className="text-app">{shown.length}</span> • On ball <span className="text-app">{enabledCount}</span>
-          </div>
+        <div className="text-xs text-muted whitespace-nowrap tabular-nums">
+          <span className="text-app font-medium">{enabledCount}</span> on ball
         </div>
       </div>
 
-      {/* Sliders */}
-      <div className="mt-4 grid grid-cols-2 gap-3 flex-shrink-0">
-        <LabeledSlider label="Roughness" value={roughness} onChange={setRoughness} />
-        <LabeledSlider label="Metalness" value={metalness} onChange={setMetalness} />
-      </div>
-
       {/* Signature list (scrollable) */}
-      <div className="mt-4 flex-1 overflow-auto rounded-xl border panel min-h-[160px] max-h-[45vh] lg:max-h-none">
+      <div className="mt-3 flex-1 overflow-auto rounded-xl border min-h-[160px] max-h-[42vh] lg:max-h-none" style={{ borderColor: "var(--panel-border)" }}>
         {shown.length === 0 ? (
           <div className="h-full grid place-items-center py-10 text-center text-muted text-sm px-4">
             {signatures.length === 0
@@ -198,10 +160,10 @@ export default function SignaturesPanel({ textureCanvas }) {
             {shown.map((sig) => (
               <li
                 key={sig.id}
-                className="flex items-center gap-2 px-3 py-2 transition
+                className="flex items-center gap-2 px-3 py-2 transition group
                            hover:bg-black/5 dark:hover:bg-white/5"
               >
-                <label className="flex items-center gap-2 cursor-pointer select-none flex-1 min-w-0">
+                <label className="flex items-center gap-2.5 cursor-pointer select-none flex-1 min-w-0">
                   <input
                     type="checkbox"
                     checked={sig.enabled}
@@ -209,13 +171,13 @@ export default function SignaturesPanel({ textureCanvas }) {
                     aria-label={`Toggle ${sig.name}`}
                     className="h-4 w-4 flex-shrink-0"
                   />
-                  <span className={`truncate ${sig.enabled ? "text-app" : "text-muted line-through decoration-1"}`}>
+                  <span className={`truncate text-sm ${sig.enabled ? "text-app" : "text-muted line-through decoration-1"}`}>
                     {sig.name}
                   </span>
                 </label>
                 <button
                   onClick={() => removeSignature(sig.id)}
-                  className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
+                  className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 opacity-40 group-hover:opacity-100 transition"
                   aria-label={`Remove ${sig.name}`}
                 >
                   <Trash2 className="h-4 w-4 text-muted" />
@@ -226,23 +188,42 @@ export default function SignaturesPanel({ textureCanvas }) {
         )}
       </div>
 
-      {/* Export buttons */}
-      <div className="mt-3 flex gap-2 flex-shrink-0">
+      {signatures.length > 0 && (
+        <div className="mt-1.5 flex justify-end flex-shrink-0">
+          <button
+            onClick={() => setConfirmClear(true)}
+            className="px-2 py-1 rounded-lg hover:bg-red-500/10 text-red-400/80 hover:text-red-400 transition text-xs inline-flex items-center gap-1"
+          >
+            <X className="h-3 w-3" /> Clear all
+          </button>
+        </div>
+      )}
+
+      {/* Material */}
+      <div className="mt-4 flex-shrink-0">
+        <div className="section-label mb-2.5">Material</div>
+        <div className="grid grid-cols-2 gap-4">
+          <LabeledSlider label="Roughness" value={roughness} onChange={setRoughness} />
+          <LabeledSlider label="Metalness" value={metalness} onChange={setMetalness} />
+        </div>
+      </div>
+
+      {/* Export */}
+      <div className="mt-4 pt-3 border-t flex gap-1 flex-shrink-0" style={{ borderColor: "var(--panel-border)" }}>
         <ExportTextureButton canvas={textureCanvas} />
-        <button onClick={onExport} className={`${glassBtn} text-sm`} title="Download the enabled names as JSON">
-          <Upload className="h-4 w-4 rotate-180" /> Export names
+        <button onClick={onExport} className={ghost} title="Download the enabled names as JSON">
+          <Download className="h-4 w-4" /> Export names
         </button>
+        <label className={`${ghost} cursor-pointer`} title="Import names from a JSON file">
+          <Upload className="h-4 w-4" /> Import
+          <input type="file" accept="application/json,.json" className="sr-only" onChange={onImport} />
+        </label>
       </div>
 
       {/* Dialogs */}
       <SaveProjectDialog
         isOpen={showSaveDialog}
         onClose={() => setShowSaveDialog(false)}
-      />
-      <ProjectListDialog
-        isOpen={showProjectList}
-        onClose={() => setShowProjectList(false)}
-        onLoadProject={handleLoadProject}
       />
       <ConfirmDialog
         open={confirmClear}

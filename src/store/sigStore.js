@@ -206,6 +206,11 @@ export const useSigStore = create(persist((set, get) => ({
   authReady: false,
   setAuthUser: (user) => set({ user, authReady: true }),
 
+  // Global "My Projects" dialog (openable from anywhere, e.g. after sign-in)
+  showProjectsDialog: false,
+  openProjectsDialog: () => set({ showProjectsDialog: true }),
+  closeProjectsDialog: () => set({ showProjectsDialog: false }),
+
   // Toast notifications
   toasts: [],
   pushToast: (message, type = "success") => {

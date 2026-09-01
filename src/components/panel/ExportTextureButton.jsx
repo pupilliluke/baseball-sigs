@@ -2,8 +2,7 @@ import React from "react";
 import { Download } from "lucide-react";
 import { useSigStore } from "../../store/sigStore";
 
-// Common accent-aware button style
-const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
+const ghost = "btn-ghost px-2.5 py-2 text-sm inline-flex items-center gap-1.5";
 
 export default function ExportTextureButton({ canvas }) {
   const pushToast = useSigStore((s) => s.pushToast);
@@ -20,7 +19,7 @@ export default function ExportTextureButton({ canvas }) {
   }
 
   return (
-    <button onClick={downloadTexture} className={`${glassBtn} text-sm`} title="Download the ball texture as a PNG">
+    <button onClick={downloadTexture} className={ghost} title="Download the ball texture as a PNG">
       <Download className="h-4 w-4" /> Export PNG
     </button>
   );

@@ -91,8 +91,10 @@ export default function VideoExportButton() {
     <button
       onClick={isRecording ? stopRecording : startRecording}
       disabled={isProcessing}
-      className={`px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass ${
-        isRecording ? "!bg-red-500/20 !border-red-500/50 !text-red-400" : ""
+      className={`px-2.5 py-2 rounded-[10px] text-sm transition inline-flex items-center gap-1.5 ${
+        isRecording
+          ? "bg-red-500/15 text-red-400 font-medium"
+          : "btn-ghost"
       } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
     >
       {buttonIcon}

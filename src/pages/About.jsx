@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 export default function About(){
-  const panel = "rounded-2xl p-6 panel border";
+  const panel = "rounded-2xl p-6 panel-elevated border";
   return (
     <div className="grid gap-6 max-w-3xl">
       <section className={panel}>

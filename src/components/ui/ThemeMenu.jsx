@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSigStore } from "../../store/sigStore";
 import { Sun, Moon, Monitor, Droplets } from "lucide-react";
 
-const btn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
-const item = "px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center gap-2";
+const btn = "btn-ghost px-2.5 py-2 text-sm inline-flex items-center gap-1.5";
+const item = "px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center gap-2 text-sm";
 const dot  = "h-3 w-3 rounded-full";
 
 export default function ThemeMenu(){
@@ -20,9 +20,9 @@ export default function ThemeMenu(){
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={()=>setOpen(o=>!o)} className={btn}>
+      <button onClick={()=>setOpen(o=>!o)} className={btn} title="Theme & accent">
         {themeMode === "dark" ? <Moon className="h-4 w-4"/> : themeMode === "light" ? <Sun className="h-4 w-4"/> : <Monitor className="h-4 w-4"/>}
-        Theme
+        <span className="hidden lg:inline">Theme</span>
       </button>
 
       {open && (

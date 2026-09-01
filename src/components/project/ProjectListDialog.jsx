@@ -1,22 +1,35 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, Trash2, FolderOpen, RefreshCw, AlertCircle } from "lucide-react";
 import { useSigStore, SPORTS } from "../../store/sigStore";
 import { getUserProjects, deleteProject, getUserId } from "../../services/projectService";
 import Dialog from "../ui/Dialog";
 import ConfirmDialog from "../ui/ConfirmDialog";
 
-export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
+/**
+ * Global "My Projects" dialog, controlled via the store so it can be opened
+ * from anywhere (panel Load button, post-sign-in, …).
+ */
+export default function ProjectListDialog() {
   const {
+    sport,
+    setSport,
     projects,
     setProjects,
     isLoadingProjects,
     setLoadingProjects,
     currentProjectId,
+    setCurrentProject,
     clearCurrentProject,
+    loadProjectSignatures,
+    showProjectsDialog,
+    closeProjectsDialog,
     pushToast,
     user,
   } = useSigStore();
 
+  const navigate = useNavigate();
+  const location = useLocation();
   const [deletingId, setDeletingId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null); // {id, name}
   const [loadError, setLoadError] = useState("");
@@ -36,8 +49,8 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   }, [setLoadingProjects, setProjects]);
 
   useEffect(() => {
-    if (isOpen) loadProjects();
-  }, [isOpen, loadProjects]);
+    if (showProjectsDialog) loadProjects();
+  }, [showProjectsDialog, loadProjects]);
 
   const handleDelete = async (projectId, projectName) => {
     setDeletingId(projectId);
@@ -54,10 +67,13 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   };
 
   const handleLoad = (project) => {
-    onLoadProject(project);
+    if (project.sport && project.sport !== sport) setSport(project.sport);
+    setCurrentProject(project.id, project.projectName);
+    loadProjectSignatures(project.signatures || project.signatureNames || []);
     const count = (project.signatures || project.signatureNames || []).length;
     pushToast(`Loaded "${project.projectName}" — ${count} signature${count === 1 ? "" : "s"}`);
-    onClose();
+    closeProjectsDialog();
+    if (location.pathname !== "/") navigate("/");
   };
 
   const formatDate = (date) => {
@@ -72,7 +88,7 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} title="My Projects" maxWidth="max-w-2xl">
+    <Dialog open={showProjectsDialog} onClose={closeProjectsDialog} title="My Projects" maxWidth="max-w-2xl">
       {isLoadingProjects ? (
         <div className="flex items-center justify-center py-12">
           <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />

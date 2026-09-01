@@ -3,6 +3,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useSigStore } from "../store/sigStore";
 import Toaster from "../components/ui/Toaster";
 import AuthButton from "../components/ui/AuthButton";
+import ProjectListDialog from "../components/project/ProjectListDialog";
+import WelcomeDialog from "../components/ui/WelcomeDialog";
 import { watchAuth } from "../services/authService";
 
 export default function AppShell() {
@@ -46,27 +48,25 @@ export default function AppShell() {
 
   return (
     <div className="min-h-screen bg-surface text-app relative">
-      {/* Background decoration */}
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(50%_40%_at_50%_0%,hsl(210_70%_25%_/_0.25),transparent_60%),radial-gradient(40%_40%_at_100%_0%,hsl(270_60%_40%_/_0.15),transparent_60%),radial-gradient(40%_60%_at_0%_0%,hsl(190_70%_40%_/_0.15),transparent_60%)]" />
-      <div className="pointer-events-none fixed inset-0 -z-10 [mask-image:radial-gradient(1000px_500px_at_50%_-10%,black,transparent)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent)]" />
+      {/* One quiet accent glow at the top */}
+      <div
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{ background: "radial-gradient(55% 45% at 50% -8%, color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 16%, transparent), transparent 70%)" }}
+      />
 
       {/* Header */}
-      <header className="max-w-7xl mx-auto px-4 pt-6 pb-3 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-           <div className="h-10 w-10 rounded-2xl border grid place-items-center"
-             style={{
-               background: "color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 20%, transparent)",
-               borderColor: "color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 30%, transparent)"
-             }}>
-             <span className="text-xl" aria-hidden="true">⚾</span>
+      <header className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-4 flex flex-wrap items-center justify-between gap-3">
+        <NavLink to="/" className="flex items-center gap-2.5 group">
+          <div
+            className="h-9 w-9 rounded-xl grid place-items-center transition group-hover:scale-105"
+            style={{ background: "color-mix(in hsl, hsl(var(--accent-h) var(--accent-s) var(--accent-l)) 14%, transparent)" }}
+          >
+            <span className="text-lg" aria-hidden="true">⚾</span>
           </div>
-          <div>
-             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Collin's Signatures</h1>
-            <p className="text-muted text-sm">Signed baseballs, basketballs & footballs • Real-time 3D • Export & share</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <nav className="flex gap-1">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Collin's Signatures</h1>
+        </NavLink>
+        <div className="flex items-center gap-3 flex-wrap">
+          <nav className="flex gap-0.5">
             {[
               { to: "/", label: "Studio" },
               { to: "/gallery", label: "Gallery" },
@@ -77,10 +77,10 @@ export default function AppShell() {
                 to={to}
                 end
                 className={({ isActive }) =>
-                  `px-3 py-2 rounded-xl border transition ${
+                  `px-3 py-1.5 rounded-lg text-sm transition ${
                     isActive
-                      ? "btn-glass border-accent text-accent font-medium"
-                      : "border-transparent text-muted hover:text-app hover:bg-black/5 dark:hover:bg-white/10"
+                      ? "text-accent font-semibold bg-accent/10"
+                      : "text-muted hover:text-app hover:bg-black/5 dark:hover:bg-white/10"
                   }`
                 }
               >
@@ -93,21 +93,19 @@ export default function AppShell() {
       </header>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-4 pb-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pb-10">
         <Outlet />
       </main>
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-4 pb-8 text-sm text-muted flex items-center justify-between">
-        <span>
-          © {new Date().getFullYear()} Collin's Signatures
-        </span>
-        <span className="hidden sm:inline">
-          Built with React • Tailwind • Three.js • Zustand • Motion
-        </span>
+      <footer className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 text-xs text-muted flex items-center justify-between">
+        <span>© {new Date().getFullYear()} Collin's Signatures</span>
+        <span className="hidden sm:inline">Real-time 3D • Made with React & Three.js</span>
       </footer>
 
       <Toaster />
+      <ProjectListDialog />
+      <WelcomeDialog />
     </div>
   );
 }

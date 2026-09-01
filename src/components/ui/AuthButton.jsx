@@ -1,32 +1,17 @@
 import React, { useState } from "react";
-import { LogIn, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useSigStore } from "../../store/sigStore";
-import { signInWithGoogle, signOutUser, signInErrorMessage } from "../../services/authService";
-
-const glassBtn = "px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass";
+import { signOutUser } from "../../services/authService";
+import { useGoogleSignIn } from "../../hooks/useGoogleSignIn";
+import GoogleIcon from "./GoogleIcon";
 
 export default function AuthButton() {
   const { user, authReady, pushToast, clearCurrentProject } = useSigStore();
-  const [busy, setBusy] = useState(false);
-
-  const handleSignIn = async () => {
-    setBusy(true);
-    try {
-      const { user: signedIn, migrated } = await signInWithGoogle();
-      pushToast(`Signed in as ${signedIn.displayName || signedIn.email}`);
-      if (migrated > 0) {
-        pushToast(`Moved ${migrated} project${migrated === 1 ? "" : "s"} from this browser into your account`, "info");
-      }
-    } catch (error) {
-      console.error("Sign-in failed:", error);
-      const message = signInErrorMessage(error);
-      if (message) pushToast(message, "error");
-    }
-    setBusy(false);
-  };
+  const { signIn, busy } = useGoogleSignIn();
+  const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = async () => {
-    setBusy(true);
+    setSigningOut(true);
     try {
       await signOutUser();
       clearCurrentProject();
@@ -35,7 +20,7 @@ export default function AuthButton() {
       console.error("Sign-out failed:", error);
       pushToast("Sign-out failed — try again", "error");
     }
-    setBusy(false);
+    setSigningOut(false);
   };
 
   if (!authReady) return null;
@@ -43,12 +28,12 @@ export default function AuthButton() {
   if (!user) {
     return (
       <button
-        onClick={handleSignIn}
+        onClick={signIn}
         disabled={busy}
-        className={`${glassBtn} text-sm disabled:opacity-50`}
+        className="px-3 py-2 rounded-xl border transition inline-flex items-center gap-2 btn-glass text-sm disabled:opacity-50"
         title="Sign in with Google to keep your projects across browsers and devices"
       >
-        <LogIn className="h-4 w-4" />
+        <GoogleIcon className="h-4 w-4" />
         <span className="hidden sm:inline">Sign in</span>
       </button>
     );
@@ -76,7 +61,7 @@ export default function AuthButton() {
       </span>
       <button
         onClick={handleSignOut}
-        disabled={busy}
+        disabled={signingOut}
         className="p-2 rounded-xl border btn-glass transition disabled:opacity-50"
         title="Sign out"
         aria-label="Sign out"
