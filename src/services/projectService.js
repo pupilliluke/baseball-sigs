@@ -3,7 +3,7 @@ import {
   query, where, orderBy, getDocs, getDoc,
   serverTimestamp
 } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { db, auth } from "../lib/firebase";
 
 const coll = () => collection(db, "signature-projects");
 
@@ -69,8 +69,8 @@ export async function deleteProject(projectId) {
   await deleteDoc(doc(db, "signature-projects", projectId));
 }
 
-// Generate a simple user ID (in production, you'd use proper auth)
-export const getUserId = () => {
+// Anonymous per-browser identity, used only while signed out
+export const getAnonymousUserId = () => {
   let userId = localStorage.getItem('baseball-sigs-user-id');
   if (!userId) {
     userId = 'user_' + Math.random().toString(36).substr(2, 9);
@@ -78,3 +78,21 @@ export const getUserId = () => {
   }
   return userId;
 };
+
+// Signed in → the Firebase account uid (projects follow the account across
+// devices); signed out → the legacy per-browser anonymous id.
+export const getUserId = () => auth.currentUser?.uid || getAnonymousUserId();
+
+/**
+ * Adopt projects this browser saved anonymously into the signed-in account,
+ * so they show up everywhere the user signs in. Returns how many moved.
+ */
+export async function migrateAnonymousProjects(uid) {
+  const anonId = localStorage.getItem('baseball-sigs-user-id');
+  if (!anonId || anonId === uid) return 0;
+  const snap = await getDocs(query(coll(), where("userId", "==", anonId)));
+  await Promise.all(snap.docs.map(d =>
+    updateDoc(doc(db, "signature-projects", d.id), { userId: uid, updatedAt: serverTimestamp() })
+  ));
+  return snap.size;
+}

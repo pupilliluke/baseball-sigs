@@ -27,7 +27,8 @@ export default function About(){
           </li>
           <li>
             <strong className="text-app">Save your work.</strong> Projects live in the cloud — save a roster,
-            load it later, or keep several going at once.
+            load it later, or keep several going at once. Sign in with Google (top right) and your projects
+            follow your account to any browser or device.
           </li>
         </ol>
         <p className="text-muted mt-4">Tip: pause rotation before recording for a steadier export, or orbit the

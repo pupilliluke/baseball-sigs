@@ -201,6 +201,11 @@ export const useSigStore = create(persist((set, get) => ({
     set({ signatures });
   },
 
+  // Auth state (managed by Firebase; not persisted here)
+  user: null,
+  authReady: false,
+  setAuthUser: (user) => set({ user, authReady: true }),
+
   // Toast notifications
   toasts: [],
   pushToast: (message, type = "success") => {

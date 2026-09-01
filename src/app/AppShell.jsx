@@ -2,9 +2,14 @@ import React, { useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useSigStore } from "../store/sigStore";
 import Toaster from "../components/ui/Toaster";
+import AuthButton from "../components/ui/AuthButton";
+import { watchAuth } from "../services/authService";
 
 export default function AppShell() {
-  const { themeMode, accent } = useSigStore();
+  const { themeMode, accent, setAuthUser } = useSigStore();
+
+  // Track the Firebase auth session (restores signed-in state on reload)
+  useEffect(() => watchAuth(setAuthUser), [setAuthUser]);
 
   // Dark/light/system mode handling
   useEffect(() => {
@@ -60,28 +65,31 @@ export default function AppShell() {
             <p className="text-muted text-sm">Signed baseballs, basketballs & footballs • Real-time 3D • Export & share</p>
           </div>
         </div>
-        <nav className="flex gap-1">
-          {[
-            { to: "/", label: "Studio" },
-            { to: "/gallery", label: "Gallery" },
-            { to: "/about", label: "About" },
-          ].map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end
-              className={({ isActive }) =>
-                `px-3 py-2 rounded-xl border transition ${
-                  isActive
-                    ? "btn-glass border-accent text-accent font-medium"
-                    : "border-transparent text-muted hover:text-app hover:bg-black/5 dark:hover:bg-white/10"
-                }`
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="flex items-center gap-2 flex-wrap">
+          <nav className="flex gap-1">
+            {[
+              { to: "/", label: "Studio" },
+              { to: "/gallery", label: "Gallery" },
+              { to: "/about", label: "About" },
+            ].map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end
+                className={({ isActive }) =>
+                  `px-3 py-2 rounded-xl border transition ${
+                    isActive
+                      ? "btn-glass border-accent text-accent font-medium"
+                      : "border-transparent text-muted hover:text-app hover:bg-black/5 dark:hover:bg-white/10"
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+          <AuthButton />
+        </div>
       </header>
 
       {/* Main content */}

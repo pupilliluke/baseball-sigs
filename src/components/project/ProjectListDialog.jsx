@@ -14,6 +14,7 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
     currentProjectId,
     clearCurrentProject,
     pushToast,
+    user,
   } = useSigStore();
 
   const [deletingId, setDeletingId] = useState(null);
@@ -156,6 +157,13 @@ export default function ProjectListDialog({ isOpen, onClose, onLoadProject }) {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {!user && !isLoadingProjects && !loadError && (
+        <div className="mt-4 pt-3 border-t text-xs text-muted" style={{ borderColor: "var(--panel-border)" }}>
+          You're browsing as a guest — these projects are tied to this browser. Sign in
+          (top right) to keep them with your Google account across devices.
         </div>
       )}
 

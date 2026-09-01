@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 // Firebase web app config. These are public client identifiers (they ship in
 // every deployed bundle); env vars can override them per environment.
@@ -17,5 +18,9 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore
 export const db = getFirestore(app);
+
+// Auth: Google sign-in makes projects follow the account across devices
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
 
 export default app;
