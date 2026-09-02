@@ -17,9 +17,19 @@ export default function AppShell() {
   const uid = user?.uid || null;
 
   // Intro gate: once per browser session, so a refresh mid-session goes
-  // straight to the studio instead of replaying the reveal.
+  // straight to the studio instead of replaying the reveal. Skipped entirely
+  // on phones and tablets — pinning the page and taking over touch scrolling
+  // fights the way people expect to move through a page on a small screen.
   const [introDone, setIntroDone] = useState(() => {
-    try { return sessionStorage.getItem(INTRO_KEY) === "1"; } catch { return true; }
+    try {
+      const isTouchOrSmall =
+        window.matchMedia("(max-width: 768px)").matches ||
+        window.matchMedia("(pointer: coarse)").matches;
+      if (isTouchOrSmall) return true;
+      return sessionStorage.getItem(INTRO_KEY) === "1";
+    } catch {
+      return true;
+    }
   });
   const finishIntro = () => {
     try { sessionStorage.setItem(INTRO_KEY, "1"); } catch { /* private mode */ }
