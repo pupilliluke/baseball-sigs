@@ -5,6 +5,7 @@ import LabeledSlider from "./LabeledSlider";
 import ExportTextureButton from "./ExportTextureButton";
 import SaveProjectDialog from "../project/SaveProjectDialog";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import Hint from "../ui/Hint";
 
 const ghost = "btn-ghost px-2.5 py-2 text-sm inline-flex items-center gap-1.5";
 
@@ -112,6 +113,12 @@ export default function SignaturesPanel({ textureCanvas }) {
           </span>
         </div>
       )}
+
+      <Hint className="mt-3">
+        Type a name and press <strong className="text-app">Add</strong> — it appears on the ball straight
+        away. Untick anything to hide it without deleting. <strong className="text-app">Save</strong> stores
+        the list under a sport and a category of your choosing.
+      </Hint>
 
       {/* Add signature */}
       <div className="mt-4 flex gap-2 flex-shrink-0">

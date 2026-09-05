@@ -10,6 +10,7 @@ import {
   getUserCategories, saveUserCategories, renameCategoryEverywhere,
 } from "../services/projectService";
 import Dialog from "../components/ui/Dialog";
+import Hint from "../components/ui/Hint";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 const ghost = "btn-ghost px-2.5 py-2 text-sm inline-flex items-center gap-1.5";
@@ -21,7 +22,8 @@ export default function Collection() {
     user, authReady, projects, setProjects,
     accountCategories, setAccountCategories, knownCategories,
     setSport, setCurrentProject, loadProjectSignatures,
-    currentProjectId, pushToast,
+    currentProjectId, pushToast, startNewList,
+    hintsEnabled, setHintsEnabled,
   } = useSigStore();
 
   const navigate = useNavigate();
@@ -265,13 +267,31 @@ export default function Collection() {
             <Download className="h-4 w-4" /> Back up all
           </button>
           <button
-            onClick={() => navigate("/studio")}
+            onClick={() => { startNewList(); navigate("/studio"); }}
             className="px-3 py-2 rounded-xl bg-accent text-white text-sm font-medium inline-flex items-center gap-1.5 hover:brightness-[1.05] transition"
+            title="Start an empty list in the studio"
           >
             <Plus className="h-4 w-4" /> New list
           </button>
         </div>
       </div>
+
+      <Hint className="mb-4">
+        This is everything you&apos;ve saved. <strong className="text-app">New list</strong> opens an empty
+        studio to build one; <strong className="text-app">Categories</strong> lets you make your own groups
+        like Jerseys or Ticket stubs. Each card can be opened, renamed, duplicated or downloaded.
+      </Hint>
+
+      {!hintsEnabled && (
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={() => setHintsEnabled(true)}
+            className="text-xs text-muted hover:text-app underline underline-offset-2 transition"
+          >
+            Show hints
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="panel-elevated border rounded-2xl p-3 mb-4 flex flex-col gap-3">
@@ -356,8 +376,11 @@ export default function Collection() {
           <FolderOpen className="h-12 w-12 mx-auto mb-3 opacity-50" />
           <div className="text-lg mb-1 text-app">Nothing saved yet</div>
           <div className="text-sm mb-5">Build a list in the studio and save it — it&apos;ll show up here.</div>
-          <button onClick={() => navigate("/studio")} className="px-4 py-2 rounded-xl bg-accent text-white text-sm font-medium">
-            Open the studio
+          <button
+            onClick={() => { startNewList(); navigate("/studio"); }}
+            className="px-4 py-2 rounded-xl bg-accent text-white text-sm font-medium"
+          >
+            Start your first list
           </button>
         </div>
       ) : visible.length === 0 ? (
@@ -704,10 +727,11 @@ function CategoriesDialog({ open, onClose, categories, accountCategories, projec
           );
         })}
       </ul>
-      <p className="text-xs text-muted mt-3">
-        Renaming moves every list in that category. A category still used by a list can&apos;t be removed —
-        move or delete those lists first.
-      </p>
+      <Hint className="mt-3">
+        Type a name and press <strong className="text-app">Create</strong> to add your own category — it&apos;s
+        available next time you save. Renaming moves every list in that category, and one still in use
+        can&apos;t be removed until those lists move elsewhere.
+      </Hint>
     </Dialog>
   );
 }

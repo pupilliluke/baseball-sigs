@@ -135,6 +135,9 @@ export const useSigStore = create(persist((set, get) => ({
   currentProjectName: "",
   currentCategory: FALLBACK_CATEGORY,
   customCategories: readCustomCategories(),
+  // Short inline pointers for people finding their way around; once someone
+  // knows the app they can switch them off for good.
+  hintsEnabled: true,
   // Categories loaded from the account (kept separate so a sign-out doesn't
   // strand another account's names in this browser)
   accountCategories: [],
@@ -179,6 +182,15 @@ export const useSigStore = create(persist((set, get) => ({
     signatures: s.signatures.filter(sig => sig.id !== id)
   })),
   clearAllSignatures: () => set({ signatures: [] }),
+  // Begin a genuinely blank list: detached from any saved project and with an
+  // empty roster, so "New list" starts from scratch rather than inheriting
+  // whatever happened to be loaded.
+  startNewList: () => set({
+    signatures: [],
+    currentProjectId: null,
+    currentProjectName: "",
+    currentCategory: FALLBACK_CATEGORY,
+  }),
   resetSignatures: () => set((s) => ({ signatures: defaultRoster(s.sport) })),
 
   // Theme + accent methods
@@ -240,6 +252,7 @@ export const useSigStore = create(persist((set, get) => ({
   // Categories seen across the account's saved lists, merged with built-ins
   // and anything added locally — so a category survives as long as a list uses it.
   setAccountCategories: (list) => set({ accountCategories: Array.isArray(list) ? list : [] }),
+  setHintsEnabled: (on) => set({ hintsEnabled: !!on }),
   knownCategories: () => {
     const s = get();
     const fromProjects = (s.projects || []).map(p => p.category).filter(Boolean);
@@ -322,6 +335,7 @@ export const useSigStore = create(persist((set, get) => ({
     currentProjectName: s.currentProjectName,
     currentCategory: s.currentCategory,
     customCategories: s.customCategories,
+    hintsEnabled: s.hintsEnabled,
     shuffleSeed: s.shuffleSeed,
     autoRotate: s.autoRotate,
     roughness: s.roughness,
