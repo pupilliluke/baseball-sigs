@@ -51,7 +51,14 @@ export default function ProjectListDialog() {
   }, [setLoadingProjects, setProjects]);
 
   useEffect(() => {
-    if (showProjectsDialog) loadProjects();
+    if (showProjectsDialog) {
+      // Start unfiltered: the component never unmounts, so a filter left over
+      // from a previous account could otherwise hide every list with no chip
+      // on screen to clear it.
+      setSportFilter("all");
+      setCategoryFilter("all");
+      loadProjects();
+    }
   }, [showProjectsDialog, loadProjects]);
 
   const handleDelete = async (projectId, projectName) => {
@@ -153,7 +160,13 @@ export default function ProjectListDialog() {
           )}
           {visibleProjects.length === 0 && (
             <div className="text-center py-8 text-muted text-sm">
-              No lists match these filters.
+              <div className="mb-3">No lists match these filters.</div>
+              <button
+                onClick={() => { setSportFilter("all"); setCategoryFilter("all"); }}
+                className="px-3 py-1.5 rounded-xl border btn-glass transition text-xs"
+              >
+                Show all {projects.length} list{projects.length === 1 ? "" : "s"}
+              </button>
             </div>
           )}
           {visibleProjects.map((project) => {

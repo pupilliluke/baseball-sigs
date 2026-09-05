@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSigStore, FALLBACK_CATEGORY } from "../store/sigStore";
+import { useSigStore, FALLBACK_CATEGORY, DEFAULT_NAMES } from "../store/sigStore";
 import { signInWithGoogle, signInErrorMessage } from "../services/authService";
 import { getUserProjects } from "../services/projectService";
 
@@ -25,12 +25,23 @@ export function useGoogleSignIn() {
         pushToast(`Moved ${migrated} list${migrated === 1 ? "" : "s"} from this browser into your account`, "info");
       }
 
-      // Put their newest list on the ball straight away.
+      // Put their newest list on the ball straight away — but never on top of
+      // work in progress. A roster that is still the stock lineup (or empty, or
+      // already tied to a saved list) is safe to replace; anything else is
+      // something the person built and has not saved yet.
+      const s = useSigStore.getState();
+      const names = s.signatures.map(x => x.name);
+      const stock = DEFAULT_NAMES[s.sport] || [];
+      const isStockRoster = names.length === stock.length && names.every((n, i) => n === stock[i]);
+      const safeToReplace = !!s.currentProjectId || names.length === 0 || isStockRoster;
+
       try {
         const list = await getUserProjects({ userId: user.uid });
         setProjects(list);
         const latest = list[0]; // getUserProjects orders by updatedAt desc
-        if (latest) {
+        if (latest && !safeToReplace) {
+          pushToast(`Kept your unsaved work. Open Load to see your ${list.length} saved list${list.length === 1 ? "" : "s"}.`, "info");
+        } else if (latest) {
           if (latest.sport) setSport(latest.sport);
           setCurrentProject(latest.id, latest.projectName, latest.category || FALLBACK_CATEGORY);
           loadProjectSignatures(latest.signatures || latest.signatureNames || []);

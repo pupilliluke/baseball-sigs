@@ -112,7 +112,9 @@ export async function migrateAnonymousProjects(uid) {
   if (!anonId || anonId === uid) return 0;
   const snap = await getDocs(query(coll(), where("userId", "==", anonId)));
   await Promise.all(snap.docs.map(d =>
-    updateDoc(doc(db, "signature-projects", d.id), { userId: uid, updatedAt: serverTimestamp() })
+    // Only the owner changes. Touching updatedAt would make a just-claimed
+    // guest list look newer than everything the account already had.
+    updateDoc(doc(db, "signature-projects", d.id), { userId: uid })
   ));
   localStorage.removeItem(ANON_KEY); // a fresh guest id is minted on next use
   return snap.size;

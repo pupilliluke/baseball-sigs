@@ -13,6 +13,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
     currentCategory,
     setCurrentProject,
     addCustomCategory,
+    canonicalCategory,
     knownCategories,
     pushToast,
   } = useSigStore();
@@ -45,7 +46,7 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
 
     // Persist the full roster with enabled flags; keep the legacy
     // signatureNames field (enabled-only) for older documents/readers.
-    const categoryName = (category || "").trim() || "Autographs";
+    const categoryName = canonicalCategory(category);
     const payload = {
       projectName: name,
       sport,
@@ -68,7 +69,11 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
       onClose();
     } catch (err) {
       console.error("Error saving project:", err);
-      setError(err.message || "Failed to save project — check your connection and try again.");
+      setError(
+        err?.code === "permission-denied"
+          ? "The server rejected this save. Nothing was lost — your list is still here. Please try again shortly."
+          : "Failed to save project — check your connection and try again."
+      );
     }
     setIsSaving(false);
   };

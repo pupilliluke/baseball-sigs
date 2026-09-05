@@ -157,7 +157,10 @@ export const useSigStore = create(persist((set, get) => ({
     return {
       sport: next,
       benches,
-      signatures: bench.signatures?.length ? bench.signatures : defaultRoster(next),
+      // An empty roster is a deliberate state, not a missing bench. Falling back
+      // to the stock lineup here while keeping the benched project id would leave
+      // the saved list showing stock names — and an Update would overwrite it.
+      signatures: bench.signatures ? bench.signatures : defaultRoster(next),
       currentProjectId: bench.currentProjectId || null,
       currentProjectName: bench.currentProjectName || "",
       currentCategory: bench.currentCategory || FALLBACK_CATEGORY,
@@ -209,6 +212,14 @@ export const useSigStore = create(persist((set, get) => ({
     ...(category ? { currentCategory: category } : {}),
   }),
   setCurrentCategory: (category) => set({ currentCategory: category || FALLBACK_CATEGORY }),
+  // Resolve a typed category against ones already in use, so "cards" and
+  // "Cards" stay one category instead of splitting the collection in two.
+  canonicalCategory: (category) => {
+    const name = (category || "").trim();
+    if (!name) return FALLBACK_CATEGORY;
+    const match = get().knownCategories().find(c => c.toLowerCase() === name.toLowerCase());
+    return match || name;
+  },
   addCustomCategory: (category) => set((s) => {
     const name = (category || "").trim();
     if (!name) return {};
@@ -220,7 +231,8 @@ export const useSigStore = create(persist((set, get) => ({
   }),
   clearCurrentProject: () => set({
     currentProjectId: null,
-    currentProjectName: ""
+    currentProjectName: "",
+    currentCategory: FALLBACK_CATEGORY,
   }),
   // Categories seen across the account's saved lists, merged with built-ins
   // and anything added locally — so a category survives as long as a list uses it.
