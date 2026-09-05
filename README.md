@@ -129,6 +129,21 @@ Firestore rules and indexes are deployed separately when they change:
 npx firebase-tools deploy --only firestore
 ```
 
+**Deploy rules before the client.** CI deploys hosting only, so a client that
+writes a new field can otherwise reach users before the rules that allow it.
+Rules are written to stay backward compatible (new fields are optional), so
+deploying them first is always safe. The client also degrades rather than
+breaking: if a write is rejected because the rules don't know a field yet, it
+retries without that field so the list still saves.
+
+To let CI deploy rules too, grant the Actions service account
+(`github-action-…@baseball-sigs.iam.gserviceaccount.com`) the **Firebase Rules
+Admin** role in the Google Cloud IAM console, then add before the hosting step:
+
+```yaml
+      - run: npx firebase-tools deploy --only firestore:rules --project baseball-sigs
+```
+
 Live site: https://baseball-sigs.web.app
 
 ## Contributing

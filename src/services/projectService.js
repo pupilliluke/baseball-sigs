@@ -7,32 +7,57 @@ import { db, auth } from "../lib/firebase";
 
 const coll = () => collection(db, "signature-projects");
 
+/**
+ * Saving must not depend on the security rules and the app shipping in step.
+ * Rules are deployed by hand while the client ships from CI, so a client that
+ * knows about `category` can briefly meet rules that don't. Rather than fail
+ * the whole write — losing the list in front of the person — retry once
+ * without the field. They keep their list; only the category waits.
+ */
+async function writeWithCategoryFallback(write, category) {
+  try {
+    return await write(category !== undefined ? { category } : {});
+  } catch (error) {
+    if (error?.code === "permission-denied" && category !== undefined) {
+      console.warn("Save rejected with a category; retrying without it (rules may be behind).");
+      return await write({});
+    }
+    throw error;
+  }
+}
+
 /** Create a brand new list (does not overwrite older ones) */
 export async function createProject({ userId, projectName, signatureNames, signatures, sport, category }) {
-  const ref = await addDoc(coll(), {
-    userId,
-    projectName,
-    signatureNames,
-    ...(signatures !== undefined ? { signatures } : {}),
-    ...(sport !== undefined ? { sport } : {}),
-    ...(category !== undefined ? { category } : {}),
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  const ref = await writeWithCategoryFallback(
+    (categoryField) => addDoc(coll(), {
+      userId,
+      projectName,
+      signatureNames,
+      ...(signatures !== undefined ? { signatures } : {}),
+      ...(sport !== undefined ? { sport } : {}),
+      ...categoryField,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }),
+    category
+  );
   return { id: ref.id };
 }
 
 /** Update an existing list by id */
 export async function updateProject({ projectId, projectName, signatureNames, signatures, sport, category }) {
   const ref = doc(db, "signature-projects", projectId);
-  await updateDoc(ref, {
-    ...(projectName !== undefined ? { projectName } : {}),
-    ...(signatureNames !== undefined ? { signatureNames } : {}),
-    ...(signatures !== undefined ? { signatures } : {}),
-    ...(sport !== undefined ? { sport } : {}),
-    ...(category !== undefined ? { category } : {}),
-    updatedAt: serverTimestamp(),
-  });
+  await writeWithCategoryFallback(
+    (categoryField) => updateDoc(ref, {
+      ...(projectName !== undefined ? { projectName } : {}),
+      ...(signatureNames !== undefined ? { signatureNames } : {}),
+      ...(signatures !== undefined ? { signatures } : {}),
+      ...(sport !== undefined ? { sport } : {}),
+      ...categoryField,
+      updatedAt: serverTimestamp(),
+    }),
+    category
+  );
 }
 
 /** Load all lists for the current user (newest first) */
