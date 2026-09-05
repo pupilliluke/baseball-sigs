@@ -1,0 +1,1240 @@
+{
+  "documents": [
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/4aBw0DHyppoiuocN7Pdh",
+      "fields": {
+        "createdAt": {
+          "timestampValue": "2026-08-31T02:03:10.465Z"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-08-31T02:03:10.465Z"
+        },
+        "signatures": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "test"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "userId": {
+          "stringValue": "user_w5bjne25u"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "test"
+              }
+            ]
+          }
+        },
+        "sport": {
+          "stringValue": "baseball"
+        },
+        "projectName": {
+          "stringValue": "test save"
+        }
+      },
+      "createTime": "2026-08-31T02:03:10.731244Z",
+      "updateTime": "2026-08-31T02:03:10.731244Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/AZYk2JpH8TiUYbkK53pT",
+      "fields": {
+        "userId": {
+          "stringValue": "x4lAfIyf6PPGui7mjM5LyVsEjZI3"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "lukelplp test"
+              }
+            ]
+          }
+        },
+        "sport": {
+          "stringValue": "football"
+        },
+        "signatures": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "lukelplp test"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "projectName": {
+          "stringValue": "lukelplp"
+        },
+        "createdAt": {
+          "timestampValue": "2026-09-01T03:17:50.414Z"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-09-01T03:17:50.414Z"
+        }
+      },
+      "createTime": "2026-09-01T03:17:50.466980Z",
+      "updateTime": "2026-09-01T03:17:50.466980Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/DQTxoq7GtcMPBsbNTIwQ",
+      "fields": {
+        "sport": {
+          "stringValue": "baseball"
+        },
+        "userId": {
+          "stringValue": "njD1EaunPXPDq7MrH0CGLMqohP92"
+        },
+        "projectName": {
+          "stringValue": "Baseball autographs"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-09-03T00:27:39.090Z"
+        },
+        "createdAt": {
+          "timestampValue": "2026-09-02T23:33:28.250Z"
+        },
+        "signatures": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Mickey moniak autographed jersey"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Cole Carrigg autographed baseball sweet spot"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Troy Johnston autographed baseball"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Will Clark jimmy dean signature addition # 1/25"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Dwight Gooden jimmy dean sig addition # 25/25"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Kevin Maas jimmy dean sig addition # 23/25"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Cal Ripken jr jimmy dean signature addition # 15/25"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Ezequiel Tovar x 2"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Ezequiel Tovar"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jake McCarthy"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Ryan Thompson"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Zac veen"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Mickey Moniak / angels"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jordan beck"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Brenton Doyle"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Ketel Marte"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Cole carrigg"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Mickey moniak autographed jersey"
+              },
+              {
+                "stringValue": "Cole Carrigg autographed baseball sweet spot"
+              },
+              {
+                "stringValue": "Troy Johnston autographed baseball"
+              },
+              {
+                "stringValue": "Will Clark jimmy dean signature addition # 1/25"
+              },
+              {
+                "stringValue": "Dwight Gooden jimmy dean sig addition # 25/25"
+              },
+              {
+                "stringValue": "Kevin Maas jimmy dean sig addition # 23/25"
+              },
+              {
+                "stringValue": "Cal Ripken jr jimmy dean signature addition # 15/25"
+              },
+              {
+                "stringValue": "Ezequiel Tovar x 2"
+              },
+              {
+                "stringValue": "Ezequiel Tovar"
+              },
+              {
+                "stringValue": "Jake McCarthy"
+              },
+              {
+                "stringValue": "Ryan Thompson"
+              },
+              {
+                "stringValue": "Zac veen"
+              },
+              {
+                "stringValue": "Mickey Moniak / angels"
+              },
+              {
+                "stringValue": "Jordan beck"
+              },
+              {
+                "stringValue": "Brenton Doyle"
+              },
+              {
+                "stringValue": "Ketel Marte"
+              },
+              {
+                "stringValue": "Cole carrigg"
+              }
+            ]
+          }
+        }
+      },
+      "createTime": "2026-09-02T23:33:28.327498Z",
+      "updateTime": "2026-09-03T00:27:39.165424Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/FPY1GB1KWiJ26S2AGQmU",
+      "fields": {
+        "projectName": {
+          "stringValue": "test2"
+        },
+        "userId": {
+          "stringValue": "user_5a4qcx80h"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "steve"
+              },
+              {
+                "stringValue": "john"
+              }
+            ]
+          }
+        },
+        "updatedAt": {
+          "timestampValue": "2025-08-09T21:50:01.525Z"
+        },
+        "createdAt": {
+          "timestampValue": "2025-08-09T21:39:49.868Z"
+        }
+      },
+      "createTime": "2025-08-09T21:39:49.921595Z",
+      "updateTime": "2025-08-09T21:50:01.608588Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/NOUfQTIZ0pnNAzi4UqT0",
+      "fields": {
+        "updatedAt": {
+          "timestampValue": "2025-08-17T19:38:43.097Z"
+        },
+        "createdAt": {
+          "timestampValue": "2025-08-17T19:20:55.641Z"
+        },
+        "userId": {
+          "stringValue": "user_4sr58boq8"
+        },
+        "projectName": {
+          "stringValue": "my favorite players"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Babe Ruth"
+              },
+              {
+                "stringValue": "Jackie Robinson"
+              },
+              {
+                "stringValue": "Hank Aaron"
+              },
+              {
+                "stringValue": "Willie Mays"
+              },
+              {
+                "stringValue": "Ted Williams"
+              },
+              {
+                "stringValue": "Lou Gehrig"
+              },
+              {
+                "stringValue": "Mickey Mantle"
+              },
+              {
+                "stringValue": "Derek Jeter"
+              },
+              {
+                "stringValue": "Ichiro Suzuki"
+              },
+              {
+                "stringValue": "Albert Pujols"
+              },
+              {
+                "stringValue": "Nolan Ryan"
+              },
+              {
+                "stringValue": "Sandy Koufax"
+              },
+              {
+                "stringValue": "Pedro Martínez"
+              },
+              {
+                "stringValue": "Clayton Kershaw"
+              },
+              {
+                "stringValue": "Greg Maddux"
+              },
+              {
+                "stringValue": "Randy Johnson"
+              },
+              {
+                "stringValue": "Mariano Rivera"
+              },
+              {
+                "stringValue": "Shohei Ohtani"
+              },
+              {
+                "stringValue": "Mike Trout"
+              },
+              {
+                "stringValue": "Mookie Betts"
+              },
+              {
+                "stringValue": "Yogi Berra"
+              },
+              {
+                "stringValue": "Johnny Bench"
+              },
+              {
+                "stringValue": "Roberto Clemente"
+              },
+              {
+                "stringValue": "Cal Ripken Jr."
+              },
+              {
+                "stringValue": "Ken Griffey Jr."
+              },
+              {
+                "stringValue": "Barry Bonds"
+              },
+              {
+                "stringValue": "David Ortiz"
+              },
+              {
+                "stringValue": "Tony Gwynn"
+              },
+              {
+                "stringValue": "Stan Musial"
+              },
+              {
+                "stringValue": "Honus Wagner"
+              },
+              {
+                "stringValue": "Joe DiMaggio"
+              },
+              {
+                "stringValue": "Satchel Paige"
+              },
+              {
+                "stringValue": "Walter Johnson"
+              },
+              {
+                "stringValue": "Cy Young"
+              },
+              {
+                "stringValue": "Ozzie Smith"
+              },
+              {
+                "stringValue": "Ryne Sandberg"
+              },
+              {
+                "stringValue": "Chipper Jones"
+              },
+              {
+                "stringValue": "Jeff Bagwell"
+              },
+              {
+                "stringValue": "Craig Biggio"
+              },
+              {
+                "stringValue": "George Brett"
+              },
+              {
+                "stringValue": "Paul Molitor"
+              },
+              {
+                "stringValue": "Frank Thomas"
+              },
+              {
+                "stringValue": "Vladimir Guerrero"
+              },
+              {
+                "stringValue": "Adrián Beltré"
+              },
+              {
+                "stringValue": "Carlos Beltrán"
+              },
+              {
+                "stringValue": "Bryce Harper"
+              },
+              {
+                "stringValue": "Juan Soto"
+              },
+              {
+                "stringValue": "Freddie Freeman"
+              },
+              {
+                "stringValue": "Buck O'Neil"
+              },
+              {
+                "stringValue": "Branch Rickey"
+              },
+              {
+                "stringValue": "Vin Scully"
+              },
+              {
+                "stringValue": "Harry Caray"
+              },
+              {
+                "stringValue": "Bob Uecker"
+              },
+              {
+                "stringValue": "Bill James"
+              },
+              {
+                "stringValue": "Billy Beane"
+              },
+              {
+                "stringValue": "Theo Epstein"
+              },
+              {
+                "stringValue": "Joe Torre"
+              },
+              {
+                "stringValue": "Dusty Baker"
+              }
+            ]
+          }
+        }
+      },
+      "createTime": "2025-08-17T19:20:55.713870Z",
+      "updateTime": "2025-08-17T19:38:43.154375Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/Xcd4a7WHYdmbwun3GKMP",
+      "fields": {
+        "userId": {
+          "stringValue": "njD1EaunPXPDq7MrH0CGLMqohP92"
+        },
+        "signatures": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jaylin lane"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Brandon Aiyuk # 11/15 number match card"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "updatedAt": {
+          "timestampValue": "2026-09-03T00:28:57.401Z"
+        },
+        "createdAt": {
+          "timestampValue": "2026-09-03T00:28:57.401Z"
+        },
+        "projectName": {
+          "stringValue": "Football autographs"
+        },
+        "sport": {
+          "stringValue": "football"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Jaylin lane"
+              },
+              {
+                "stringValue": "Brandon Aiyuk # 11/15 number match card"
+              }
+            ]
+          }
+        }
+      },
+      "createTime": "2026-09-03T00:28:57.454528Z",
+      "updateTime": "2026-09-03T00:28:57.454528Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/Y3nhtWLA5SLZd47NDUzy",
+      "fields": {
+        "signatures": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "pupilli.dev test"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "userId": {
+          "stringValue": "dZ3Opkm6aXUMa6vRhLiJxiB1qRx1"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-09-01T03:16:17.094Z"
+        },
+        "createdAt": {
+          "timestampValue": "2026-09-01T03:16:17.094Z"
+        },
+        "sport": {
+          "stringValue": "football"
+        },
+        "projectName": {
+          "stringValue": "pupilli.dev"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "pupilli.dev test"
+              }
+            ]
+          }
+        }
+      },
+      "createTime": "2026-09-01T03:16:17.144152Z",
+      "updateTime": "2026-09-01T03:16:17.144152Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/e0Bm1VxmOGPRENbqxZ6C",
+      "fields": {
+        "createdAt": {
+          "timestampValue": "2025-08-10T01:32:58.073Z"
+        },
+        "updatedAt": {
+          "timestampValue": "2025-08-10T01:33:34.905Z"
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Mark Pupilli"
+              },
+              {
+                "stringValue": "Collin Pupilli"
+              },
+              {
+                "stringValue": "Carol Pupilli"
+              },
+              {
+                "stringValue": "Luke Pupilli"
+              }
+            ]
+          }
+        },
+        "userId": {
+          "stringValue": "user_rq0ljhfyh"
+        },
+        "projectName": {
+          "stringValue": "Mom's signatures"
+        }
+      },
+      "createTime": "2025-08-10T01:32:58.133289Z",
+      "updateTime": "2025-08-10T01:33:34.946996Z"
+    },
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/signature-projects/jBgCUAfRfwE2bt83Toz1",
+      "fields": {
+        "signatures": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Shai Alexander (SGA)"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jalen Brunson"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Dalton Knecht"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Alperen Sengun"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jabari smith jr. #2"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Toumani Camara"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Collin Murray Boyles"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Rj Barrett"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Shaedon Sharpe"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jarred Vanderbilt"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jabari smith jr."
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Kelly oubre jr #2"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Donovan Clingan"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Josh Hart"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Immanuel quickly #2"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Kelly Oubre jr."
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Miles Bridges"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Larry Johnson Notch signature"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Brandon Williams"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Johni Broome jersey card auto"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Evan Mobley"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Egor Demin"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Immanuel Quickley"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Scoot Henderson"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jalen Wilson #3"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Sidy cissoko"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jalen Wilson #2"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Jalen Wilson"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "Derrick white"
+                    },
+                    "enabled": {
+                      "booleanValue": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "signatureNames": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Shai Alexander (SGA)"
+              },
+              {
+                "stringValue": "Jalen Brunson"
+              },
+              {
+                "stringValue": "Dalton Knecht"
+              },
+              {
+                "stringValue": "Alperen Sengun"
+              },
+              {
+                "stringValue": "Jabari smith jr. #2"
+              },
+              {
+                "stringValue": "Toumani Camara"
+              },
+              {
+                "stringValue": "Collin Murray Boyles"
+              },
+              {
+                "stringValue": "Rj Barrett"
+              },
+              {
+                "stringValue": "Shaedon Sharpe"
+              },
+              {
+                "stringValue": "Jarred Vanderbilt"
+              },
+              {
+                "stringValue": "Jabari smith jr."
+              },
+              {
+                "stringValue": "Kelly oubre jr #2"
+              },
+              {
+                "stringValue": "Donovan Clingan"
+              },
+              {
+                "stringValue": "Josh Hart"
+              },
+              {
+                "stringValue": "Immanuel quickly #2"
+              },
+              {
+                "stringValue": "Kelly Oubre jr."
+              },
+              {
+                "stringValue": "Miles Bridges"
+              },
+              {
+                "stringValue": "Larry Johnson Notch signature"
+              },
+              {
+                "stringValue": "Brandon Williams"
+              },
+              {
+                "stringValue": "Johni Broome jersey card auto"
+              },
+              {
+                "stringValue": "Evan Mobley"
+              },
+              {
+                "stringValue": "Egor Demin"
+              },
+              {
+                "stringValue": "Immanuel Quickley"
+              },
+              {
+                "stringValue": "Scoot Henderson"
+              },
+              {
+                "stringValue": "Jalen Wilson #3"
+              },
+              {
+                "stringValue": "Sidy cissoko"
+              },
+              {
+                "stringValue": "Jalen Wilson #2"
+              },
+              {
+                "stringValue": "Jalen Wilson"
+              },
+              {
+                "stringValue": "Derrick white"
+              }
+            ]
+          }
+        },
+        "createdAt": {
+          "timestampValue": "2026-09-03T00:08:35.176Z"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-09-03T00:18:20.496Z"
+        },
+        "projectName": {
+          "stringValue": "Basketball autographs"
+        },
+        "userId": {
+          "stringValue": "njD1EaunPXPDq7MrH0CGLMqohP92"
+        },
+        "sport": {
+          "stringValue": "basketball"
+        }
+      },
+      "createTime": "2026-09-03T00:08:35.262876Z",
+      "updateTime": "2026-09-03T00:18:20.673917Z"
+    }
+  ]
+}
