@@ -8,13 +8,14 @@ import { db, auth } from "../lib/firebase";
 const coll = () => collection(db, "signature-projects");
 
 /** Create a brand new list (does not overwrite older ones) */
-export async function createProject({ userId, projectName, signatureNames, signatures, sport }) {
+export async function createProject({ userId, projectName, signatureNames, signatures, sport, category }) {
   const ref = await addDoc(coll(), {
     userId,
     projectName,
     signatureNames,
     ...(signatures !== undefined ? { signatures } : {}),
     ...(sport !== undefined ? { sport } : {}),
+    ...(category !== undefined ? { category } : {}),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -22,13 +23,14 @@ export async function createProject({ userId, projectName, signatureNames, signa
 }
 
 /** Update an existing list by id */
-export async function updateProject({ projectId, projectName, signatureNames, signatures, sport }) {
+export async function updateProject({ projectId, projectName, signatureNames, signatures, sport, category }) {
   const ref = doc(db, "signature-projects", projectId);
   await updateDoc(ref, {
     ...(projectName !== undefined ? { projectName } : {}),
     ...(signatureNames !== undefined ? { signatureNames } : {}),
     ...(signatures !== undefined ? { signatures } : {}),
     ...(sport !== undefined ? { sport } : {}),
+    ...(category !== undefined ? { category } : {}),
     updatedAt: serverTimestamp(),
   });
 }
@@ -41,9 +43,11 @@ export async function getUserProjects({ userId }) {
     orderBy("updatedAt", "desc")
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ 
-    id: d.id, 
+  return snap.docs.map(d => ({
+    id: d.id,
     ...d.data(),
+    // Lists saved before categories existed are autographs
+    category: d.data().category || "Autographs",
     createdAt: d.data().createdAt?.toDate(),
     updatedAt: d.data().updatedAt?.toDate()
   }));

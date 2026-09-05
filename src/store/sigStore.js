@@ -14,6 +14,27 @@ export const SPORTS = {
   football: { label: "Football", emoji: "🏈" },
 };
 
+// Collections are grouped by sport and then by category. These are the
+// built-in categories; anyone can save a list under a new name of their own
+// and it becomes available alongside them.
+export const DEFAULT_CATEGORIES = ["Autographs", "Cards", "Jerseys"];
+export const FALLBACK_CATEGORY = "Autographs";
+const CUSTOM_CATEGORIES_KEY = "fs_custom_categories";
+
+/** Categories the user can pick from: built-ins + any they've used or added. */
+export function readCustomCategories() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(CUSTOM_CATEGORIES_KEY) || "[]");
+    return Array.isArray(raw) ? raw.filter(c => typeof c === "string" && c.trim()) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCustomCategories(list) {
+  try { localStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(list)); } catch { /* private mode */ }
+}
+
 export const DEFAULT_NAMES = {
   baseball: [
     "Babe Ruth","Jackie Robinson","Hank Aaron","Willie Mays","Ted Williams","Lou Gehrig","Mickey Mantle","Derek Jeter","Ichiro Suzuki","Albert Pujols",
@@ -112,6 +133,8 @@ export const useSigStore = create(persist((set, get) => ({
   projects: [],
   currentProjectId: null,
   currentProjectName: "",
+  currentCategory: FALLBACK_CATEGORY,
+  customCategories: readCustomCategories(),
   isLoadingProjects: false,
 
   // New theme system
@@ -127,6 +150,7 @@ export const useSigStore = create(persist((set, get) => ({
         signatures: s.signatures,
         currentProjectId: s.currentProjectId,
         currentProjectName: s.currentProjectName,
+        currentCategory: s.currentCategory,
       },
     };
     const bench = benches[next] || {};
@@ -136,6 +160,7 @@ export const useSigStore = create(persist((set, get) => ({
       signatures: bench.signatures?.length ? bench.signatures : defaultRoster(next),
       currentProjectId: bench.currentProjectId || null,
       currentProjectName: bench.currentProjectName || "",
+      currentCategory: bench.currentCategory || FALLBACK_CATEGORY,
     };
   }),
 
@@ -178,14 +203,35 @@ export const useSigStore = create(persist((set, get) => ({
 
   // Project management methods
   setProjects: (projects) => set({ projects }),
-  setCurrentProject: (projectId, projectName) => set({
+  setCurrentProject: (projectId, projectName, category) => set({
     currentProjectId: projectId,
-    currentProjectName: projectName
+    currentProjectName: projectName,
+    ...(category ? { currentCategory: category } : {}),
+  }),
+  setCurrentCategory: (category) => set({ currentCategory: category || FALLBACK_CATEGORY }),
+  addCustomCategory: (category) => set((s) => {
+    const name = (category || "").trim();
+    if (!name) return {};
+    const known = [...DEFAULT_CATEGORIES, ...s.customCategories].map(c => c.toLowerCase());
+    if (known.includes(name.toLowerCase())) return {};
+    const next = [...s.customCategories, name];
+    writeCustomCategories(next);
+    return { customCategories: next };
   }),
   clearCurrentProject: () => set({
     currentProjectId: null,
     currentProjectName: ""
   }),
+  // Categories seen across the account's saved lists, merged with built-ins
+  // and anything added locally — so a category survives as long as a list uses it.
+  knownCategories: () => {
+    const s = get();
+    const fromProjects = (s.projects || []).map(p => p.category).filter(Boolean);
+    const all = [...DEFAULT_CATEGORIES, ...s.customCategories, ...fromProjects];
+    const seen = new Map();
+    all.forEach(c => { const k = c.toLowerCase(); if (!seen.has(k)) seen.set(k, c); });
+    return [...seen.values()];
+  },
   setLoadingProjects: (loading) => set({ isLoadingProjects: loading }),
 
   // Load signatures from a project. Accepts the newer [{name, enabled}] shape
@@ -221,6 +267,7 @@ export const useSigStore = create(persist((set, get) => ({
         projects: [],
         currentProjectId: null,
         currentProjectName: "",
+        currentCategory: FALLBACK_CATEGORY,
         signatures: defaultRoster(s.sport),
         benches: {},
       };
@@ -256,6 +303,8 @@ export const useSigStore = create(persist((set, get) => ({
     benches: s.benches,
     currentProjectId: s.currentProjectId,
     currentProjectName: s.currentProjectName,
+    currentCategory: s.currentCategory,
+    customCategories: s.customCategories,
     shuffleSeed: s.shuffleSeed,
     autoRotate: s.autoRotate,
     roughness: s.roughness,

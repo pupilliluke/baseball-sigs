@@ -22,6 +22,7 @@ export default function SignaturesPanel({ textureCanvas }) {
     setMetalness,
     currentProjectId,
     currentProjectName,
+    currentCategory,
     clearCurrentProject,
     openProjectsDialog,
     pushToast,
@@ -99,6 +100,7 @@ export default function SignaturesPanel({ textureCanvas }) {
           <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full bg-accent/12 text-accent text-xs font-medium max-w-full">
             <FolderOpen className="h-3 w-3 flex-shrink-0" />
             <span className="truncate">{currentProjectName}</span>
+            <span className="opacity-70 flex-shrink-0">· {currentCategory}</span>
             <button
               onClick={() => { clearCurrentProject(); pushToast("Detached from project — saving now creates a new one", "info"); }}
               className="p-0.5 rounded-full hover:bg-accent/20"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Save, FilePlus2 } from "lucide-react";
-import { useSigStore } from "../../store/sigStore";
+import { useSigStore, SPORTS } from "../../store/sigStore";
 import { createProject, updateProject, getUserId } from "../../services/projectService";
 import Dialog from "../ui/Dialog";
 
@@ -10,11 +10,15 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
     signatures,
     currentProjectId,
     currentProjectName,
+    currentCategory,
     setCurrentProject,
+    addCustomCategory,
+    knownCategories,
     pushToast,
   } = useSigStore();
 
   const [projectName, setProjectName] = useState("");
+  const [category, setCategory] = useState(currentCategory);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,9 +26,10 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
   useEffect(() => {
     if (isOpen) {
       setProjectName(currentProjectName || "");
+      setCategory(currentCategory);
       setError("");
     }
-  }, [isOpen, currentProjectName]);
+  }, [isOpen, currentProjectName, currentCategory]);
 
   const enabledCount = signatures.filter(s => s.enabled).length;
 
@@ -40,21 +45,24 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
 
     // Persist the full roster with enabled flags; keep the legacy
     // signatureNames field (enabled-only) for older documents/readers.
+    const categoryName = (category || "").trim() || "Autographs";
     const payload = {
       projectName: name,
       sport,
+      category: categoryName,
       signatureNames: signatures.filter(s => s.enabled).map(s => s.name),
       signatures: signatures.map(s => ({ name: s.name, enabled: s.enabled })),
     };
 
     try {
+      addCustomCategory(categoryName);
       if (currentProjectId && !asNew) {
         await updateProject({ projectId: currentProjectId, ...payload });
-        setCurrentProject(currentProjectId, name);
+        setCurrentProject(currentProjectId, name, categoryName);
         pushToast(`"${name}" updated`);
       } else {
         const result = await createProject({ userId: getUserId(), ...payload });
-        setCurrentProject(result.id, name);
+        setCurrentProject(result.id, name, categoryName);
         pushToast(`"${name}" saved`);
       }
       onClose();
@@ -86,6 +94,28 @@ export default function SaveProjectDialog({ isOpen, onClose }) {
             disabled={isSaving}
             autoFocus
           />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="project-category" className="block text-sm font-medium mb-2">
+            Category
+          </label>
+          <input
+            id="project-category"
+            list="fs-category-options"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="Autographs"
+            maxLength={40}
+            className="w-full px-3 py-2 rounded-xl border input-base outline-none focus:ring-2 ring-accent placeholder:text-muted"
+            disabled={isSaving}
+          />
+          <datalist id="fs-category-options">
+            {knownCategories().map((c) => <option key={c} value={c} />)}
+          </datalist>
+          <p className="text-xs text-muted mt-1.5">
+            Pick one or type a new category — it's saved under {(SPORTS[sport] || SPORTS.baseball).label}.
+          </p>
         </div>
 
         {error && (

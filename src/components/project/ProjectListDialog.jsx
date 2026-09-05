@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, Trash2, FolderOpen, RefreshCw, AlertCircle } from "lucide-react";
-import { useSigStore, SPORTS } from "../../store/sigStore";
+import { useSigStore, SPORTS, FALLBACK_CATEGORY } from "../../store/sigStore";
 import { getUserProjects, deleteProject, resolveUserId } from "../../services/projectService";
 import Dialog from "../ui/Dialog";
 import ConfirmDialog from "../ui/ConfirmDialog";
@@ -33,6 +33,8 @@ export default function ProjectListDialog() {
   const [deletingId, setDeletingId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null); // {id, name}
   const [loadError, setLoadError] = useState("");
+  const [sportFilter, setSportFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   const loadProjects = useCallback(async () => {
     setLoadingProjects(true);
@@ -68,13 +70,26 @@ export default function ProjectListDialog() {
 
   const handleLoad = (project) => {
     if (project.sport && project.sport !== sport) setSport(project.sport);
-    setCurrentProject(project.id, project.projectName);
+    setCurrentProject(project.id, project.projectName, project.category || FALLBACK_CATEGORY);
     loadProjectSignatures(project.signatures || project.signatureNames || []);
     const count = (project.signatures || project.signatureNames || []).length;
     pushToast(`Loaded "${project.projectName}" — ${count} signature${count === 1 ? "" : "s"}`);
     closeProjectsDialog();
     if (location.pathname !== "/") navigate("/");
   };
+
+  // Filter chips are built from what the account actually has saved
+  const sportsPresent = [...new Set(projects.map(p => p.sport).filter(Boolean))];
+  const categoriesPresent = [...new Set(projects.map(p => p.category || FALLBACK_CATEGORY))];
+  const visibleProjects = projects.filter(p =>
+    (sportFilter === "all" || p.sport === sportFilter) &&
+    (categoryFilter === "all" || (p.category || FALLBACK_CATEGORY) === categoryFilter)
+  );
+
+  const chip = (active) =>
+    `px-2.5 py-1 rounded-full text-xs transition border ${
+      active ? "bg-accent/15 text-accent border-accent/40 font-medium" : "text-muted border-transparent hover:bg-black/5 dark:hover:bg-white/10"
+    }`;
 
   const formatDate = (date) => {
     if (!date) return "Unknown";
@@ -112,7 +127,36 @@ export default function ProjectListDialog() {
         </div>
       ) : (
         <div className="space-y-3">
-          {projects.map((project) => {
+          {(sportsPresent.length > 1 || categoriesPresent.length > 1) && (
+            <div className="flex flex-col gap-2 pb-1">
+              {sportsPresent.length > 1 && (
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="section-label mr-1">Sport</span>
+                  <button className={chip(sportFilter === "all")} onClick={() => setSportFilter("all")}>All</button>
+                  {sportsPresent.map(sp => (
+                    <button key={sp} className={chip(sportFilter === sp)} onClick={() => setSportFilter(sp)}>
+                      {(SPORTS[sp] || SPORTS.baseball).emoji} {(SPORTS[sp] || SPORTS.baseball).label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {categoriesPresent.length > 1 && (
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="section-label mr-1">Type</span>
+                  <button className={chip(categoryFilter === "all")} onClick={() => setCategoryFilter("all")}>All</button>
+                  {categoriesPresent.map(c => (
+                    <button key={c} className={chip(categoryFilter === c)} onClick={() => setCategoryFilter(c)}>{c}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {visibleProjects.length === 0 && (
+            <div className="text-center py-8 text-muted text-sm">
+              No lists match these filters.
+            </div>
+          )}
+          {visibleProjects.map((project) => {
             const roster = project.signatures || project.signatureNames || [];
             const names = roster.map(item => typeof item === "string" ? item : item.name);
             return (
@@ -141,8 +185,9 @@ export default function ProjectListDialog() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted">
-                      <span>{names.length} signature{names.length === 1 ? "" : "s"}</span>
+                    <div className="flex items-center gap-3 text-xs text-muted flex-wrap">
+                      <span className="px-2 py-0.5 rounded-full panel border">{project.category || FALLBACK_CATEGORY}</span>
+                      <span>{names.length} item{names.length === 1 ? "" : "s"}</span>
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         <span className="truncate">{formatDate(project.updatedAt)}</span>
