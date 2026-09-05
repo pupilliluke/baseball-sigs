@@ -22,10 +22,15 @@ jobs:
       # backward compatible (new fields are optional), so deploying them
       # ahead of the bundle is always safe, while the reverse order would
       # briefly reject writes the new client makes.
-      - name: Deploy Firestore rules and indexes
+      #
+      # Rules only: the deploy account holds firebaserules.admin, and index
+      # changes need datastore.indexAdmin on top of it. Indexes are rare and
+      # do not gate writes, so they stay a manual step:
+      #   npx firebase-tools deploy --only firestore:indexes
+      - name: Deploy Firestore rules
         run: |
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
-          npx --yes firebase-tools@14 deploy --only firestore --project baseball-sigs --non-interactive
+          npx --yes firebase-tools@14 deploy --only firestore:rules --project baseball-sigs --non-interactive
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BASEBALL_SIGS }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
