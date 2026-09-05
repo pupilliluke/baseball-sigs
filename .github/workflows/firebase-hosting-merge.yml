@@ -17,6 +17,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+      # Rules go out before the client that depends on them. They stay
+      # backward compatible (new fields are optional), so deploying them
+      # ahead of the bundle is always safe, while the reverse order would
+      # briefly reject writes the new client makes.
+      - name: Deploy Firestore rules and indexes
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          npx --yes firebase-tools@14 deploy --only firestore --project baseball-sigs --non-interactive
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BASEBALL_SIGS }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
