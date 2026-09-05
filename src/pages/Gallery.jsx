@@ -37,7 +37,7 @@ export default function Gallery(){
                   <Check className="h-4 w-4" />
                   In use
                 </div>
-                <Link to="/" className={`${btn} flex-1`} title="Back to the Studio">
+                <Link to="/studio" className={`${btn} flex-1`} title="Back to the Studio">
                   Open Studio <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

@@ -46,5 +46,28 @@ service cloud.firestore {
           && (!('category' in d) || (d.category is string && d.category.size() > 0 && d.category.size() <= 40));
       }
     }
+
+    // A person's own category names, so the set follows the account across
+    // devices instead of living in one browser. Keyed by owner id: a Firebase
+    // uid when signed in, or a "user_<random>" guest id.
+    match /user-categories/{ownerId} {
+
+      function isGuestOwner() {
+        return ownerId is string && ownerId.matches('^user_.*');
+      }
+      function isOwner() {
+        return isGuestOwner() || (request.auth != null && request.auth.uid == ownerId);
+      }
+      function isValidCategories() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['categories', 'updatedAt'])
+          && d.categories is list
+          && d.categories.size() <= 50;
+      }
+
+      allow read: if true;
+      allow create, update: if isOwner() && isValidCategories();
+      allow delete: if isOwner();
+    }
   }
 }

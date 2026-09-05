@@ -111,7 +111,8 @@ export default function AppShell() {
         <div className="flex items-center gap-3 flex-wrap">
           <nav className="flex gap-0.5">
             {[
-              { to: "/", label: "Studio" },
+              { to: "/", label: "Collection" },
+              { to: "/studio", label: "Studio" },
               { to: "/gallery", label: "Gallery" },
               { to: "/about", label: "About" },
             ].map(({ to, label }) => (

@@ -33,7 +33,7 @@ export default function About(){
         </ol>
         <p className="text-muted mt-4">Tip: pause rotation before recording for a steadier export, or orbit the
           camera while recording for a cinematic pass.</p>
-        <Link to="/" className="mt-4 inline-flex items-center gap-2 text-accent hover:underline">
+        <Link to="/studio" className="mt-4 inline-flex items-center gap-2 text-accent hover:underline">
           Open the Studio <ArrowRight className="h-4 w-4" />
         </Link>
       </section>

@@ -82,7 +82,7 @@ export default function ProjectListDialog() {
     const count = (project.signatures || project.signatureNames || []).length;
     pushToast(`Loaded "${project.projectName}" — ${count} signature${count === 1 ? "" : "s"}`);
     closeProjectsDialog();
-    if (location.pathname !== "/") navigate("/");
+    if (location.pathname !== "/studio") navigate("/studio");
   };
 
   // Filter chips are built from what the account actually has saved

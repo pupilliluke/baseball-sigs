@@ -135,6 +135,9 @@ export const useSigStore = create(persist((set, get) => ({
   currentProjectName: "",
   currentCategory: FALLBACK_CATEGORY,
   customCategories: readCustomCategories(),
+  // Categories loaded from the account (kept separate so a sign-out doesn't
+  // strand another account's names in this browser)
+  accountCategories: [],
   isLoadingProjects: false,
 
   // New theme system
@@ -236,10 +239,11 @@ export const useSigStore = create(persist((set, get) => ({
   }),
   // Categories seen across the account's saved lists, merged with built-ins
   // and anything added locally — so a category survives as long as a list uses it.
+  setAccountCategories: (list) => set({ accountCategories: Array.isArray(list) ? list : [] }),
   knownCategories: () => {
     const s = get();
     const fromProjects = (s.projects || []).map(p => p.category).filter(Boolean);
-    const all = [...DEFAULT_CATEGORIES, ...s.customCategories, ...fromProjects];
+    const all = [...DEFAULT_CATEGORIES, ...s.accountCategories, ...s.customCategories, ...fromProjects];
     const seen = new Map();
     all.forEach(c => { const k = c.toLowerCase(); if (!seen.has(k)) seen.set(k, c); });
     return [...seen.values()];
@@ -280,6 +284,7 @@ export const useSigStore = create(persist((set, get) => ({
         currentProjectId: null,
         currentProjectName: "",
         currentCategory: FALLBACK_CATEGORY,
+        accountCategories: [],
         signatures: defaultRoster(s.sport),
         benches: {},
       };
