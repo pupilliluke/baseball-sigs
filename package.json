@@ -11,7 +11,8 @@
     "start": "npx vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "backup": "node scripts/backup-firestore.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.6.1",

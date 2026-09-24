@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Search, Trash2, Pencil, Copy, Download, FolderOpen, Plus,
-  RefreshCw, AlertCircle, Tag, Upload,
+  RefreshCw, AlertCircle, Tag, Upload, Globe, Lock, Users,
 } from "lucide-react";
 import { useSigStore, SPORTS, FALLBACK_CATEGORY, DEFAULT_CATEGORIES } from "../store/sigStore";
 import {
   getUserProjects, deleteProject, updateProject, createProject, resolveUserId,
-  getUserCategories, saveUserCategories, renameCategoryEverywhere,
+  getUserCategories, saveUserCategories, renameCategoryEverywhere, setProjectVisibility,
 } from "../services/projectService";
 import Dialog from "../components/ui/Dialog";
 import Hint from "../components/ui/Hint";
@@ -25,6 +25,7 @@ export default function Collection() {
     currentProjectId, pushToast, startNewList,
     hintsEnabled, setHintsEnabled,
   } = useSigStore();
+  const publicCount = projects.filter(p => p.visibility === "public").length;
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -222,6 +223,43 @@ export default function Collection() {
     setBusy(false);
   };
 
+  const toggleVisibility = async (project) => {
+    const next = project.visibility === "public" ? "private" : "public";
+    setBusy(true);
+    try {
+      await setProjectVisibility({
+        projectId: project.id,
+        visibility: next,
+        ownerName: user?.displayName || undefined,
+      });
+      setProjects(projects.map(p => (p.id === project.id ? { ...p, visibility: next } : p)));
+      pushToast(
+        next === "public"
+          ? `"${project.projectName}" is now shared on the Community page`
+          : `"${project.projectName}" is now private — only you can see it`,
+        next === "public" ? "success" : "info"
+      );
+    } catch (error) {
+      console.error("Could not change visibility:", error);
+      pushToast("Couldn't change who can see that list — try again", "error");
+    }
+    setBusy(false);
+  };
+
+  const makeAllPrivate = async () => {
+    const pub = projects.filter(p => p.visibility === "public");
+    setBusy(true);
+    try {
+      await Promise.all(pub.map(p => setProjectVisibility({ projectId: p.id, visibility: "private" })));
+      setProjects(projects.map(p => ({ ...p, visibility: "private" })));
+      pushToast(`${pub.length} list${pub.length === 1 ? "" : "s"} made private`, "info");
+    } catch (error) {
+      console.error("Could not make lists private:", error);
+      pushToast("Couldn't change those lists — try again", "error");
+    }
+    setBusy(false);
+  };
+
   const toggleSelect = (id) => setSelected(prev => {
     const next = new Set(prev);
     if (next.has(id)) next.delete(id); else next.add(id);
@@ -276,10 +314,37 @@ export default function Collection() {
         </div>
       </div>
 
+      {publicCount > 0 && (
+        <div className="mb-4 panel-elevated border rounded-2xl p-4 flex items-start gap-3 flex-wrap">
+          <Globe className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-[240px]">
+            <div className="font-semibold text-sm">
+              {publicCount} of your lists {publicCount === 1 ? "is" : "are"} shared publicly
+            </div>
+            <p className="text-xs text-muted mt-1 leading-relaxed">
+              Anyone visiting the site can read {publicCount === 1 ? "it" : "them"} on the Community page —
+              the list name and every item on it. Your email is never shown. Use the
+              {" "}<strong className="text-app">Public / Private</strong> control on any card to change this.
+            </p>
+          </div>
+          <div className="flex items-center gap-1 flex-wrap">
+            <button onClick={() => navigate("/community")} className={ghost}>
+              <Users className="h-4 w-4" /> See it
+            </button>
+            <button onClick={makeAllPrivate} disabled={busy} className={`${ghost} disabled:opacity-40`}>
+              <Lock className="h-4 w-4" /> Make all private
+            </button>
+          </div>
+        </div>
+      )}
+
       <Hint className="mb-4">
         This is everything you&apos;ve saved. <strong className="text-app">New list</strong> opens an empty
         studio to build one; <strong className="text-app">Categories</strong> lets you make your own groups
-        like Jerseys or Ticket stubs. Each card can be opened, renamed, duplicated or downloaded.
+        like Jerseys or Ticket stubs. Each card can be opened, renamed, duplicated or downloaded, and
+        switched between <strong className="text-app">Public</strong> and
+        {" "}<strong className="text-app">Private</strong> — public ones appear on the
+        {" "}<button onClick={() => navigate("/community")} className="underline underline-offset-2 hover:text-app">Community page</button>.
       </Hint>
 
       {!hintsEnabled && (
@@ -452,6 +517,22 @@ export default function Collection() {
                     <Download className="h-3.5 w-3.5" />
                   </button>
                   <div className="flex-1" />
+                  <button
+                    onClick={() => toggleVisibility(p)}
+                    disabled={busy}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-medium inline-flex items-center gap-1 transition disabled:opacity-40 ${
+                      p.visibility === "public"
+                        ? "bg-accent/15 text-accent"
+                        : "text-muted hover:bg-black/5 dark:hover:bg-white/10"
+                    }`}
+                    title={p.visibility === "public"
+                      ? "Shared on the Community page — click to make private"
+                      : "Only you can see this — click to share it"}
+                  >
+                    {p.visibility === "public"
+                      ? <><Globe className="h-3 w-3" /> Public</>
+                      : <><Lock className="h-3 w-3" /> Private</>}
+                  </button>
                   <button
                     onClick={() => setConfirm({
                       title: "Delete this list?",

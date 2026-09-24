@@ -22,7 +22,13 @@ service cloud.firestore {
           || (request.auth != null && request.resource.data.userId == request.auth.uid);
       }
 
-      allow read: if true;
+      // Reads now respect visibility instead of being open to everyone:
+      // a list is readable if it is published, if it belongs to a signed-out
+      // browser (an anonymous id cannot be verified either way), or if it
+      // belongs to the account asking.
+      allow read: if resource.data.get('visibility', 'private') == 'public'
+        || isGuestId(resource.data.userId)
+        || (request.auth != null && resource.data.userId == request.auth.uid);
       allow create: if isValidProject() && ownsIncoming();
       // Updating requires owning the document both before and after, so no one
       // can reassign another account's project to themselves.
@@ -31,7 +37,7 @@ service cloud.firestore {
 
       function isValidProject() {
         let d = request.resource.data;
-        return d.keys().hasOnly(['userId', 'projectName', 'signatureNames', 'signatures', 'sport', 'category', 'createdAt', 'updatedAt'])
+        return d.keys().hasOnly(['userId', 'projectName', 'signatureNames', 'signatures', 'sport', 'category', 'visibility', 'ownerName', 'createdAt', 'updatedAt'])
           && d.keys().hasAll(['userId', 'projectName', 'signatureNames'])
           && d.userId is string
           && d.userId.size() > 0
@@ -43,7 +49,9 @@ service cloud.firestore {
           && d.signatureNames.size() <= 300
           && (!('signatures' in d) || (d.signatures is list && d.signatures.size() <= 300))
           && (!('sport' in d) || d.sport in ['baseball', 'basketball', 'football'])
-          && (!('category' in d) || (d.category is string && d.category.size() > 0 && d.category.size() <= 40));
+          && (!('category' in d) || (d.category is string && d.category.size() > 0 && d.category.size() <= 40))
+          && (!('visibility' in d) || d.visibility in ['public', 'private'])
+          && (!('ownerName' in d) || (d.ownerName is string && d.ownerName.size() <= 60));
       }
     }
 
