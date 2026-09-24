@@ -1,0 +1,17 @@
+{
+  "documents": [
+    {
+      "name": "projects/baseball-sigs/databases/(default)/documents/user-categories/user_seu3c6g6w",
+      "fields": {
+        "updatedAt": {
+          "timestampValue": "2026-09-05T16:08:29.932Z"
+        },
+        "categories": {
+          "arrayValue": {}
+        }
+      },
+      "createTime": "2026-09-05T16:06:31.487614Z",
+      "updateTime": "2026-09-05T16:08:29.979734Z"
+    }
+  ]
+}
