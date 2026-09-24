@@ -6,6 +6,7 @@ import AuthButton from "../components/ui/AuthButton";
 import ProjectListDialog from "../components/project/ProjectListDialog";
 import WelcomeDialog from "../components/ui/WelcomeDialog";
 import ScrollLockedHero from "../components/ui/ScrollLockedHero";
+import SharingPrompt from "../components/ui/SharingPrompt";
 
 const INTRO_KEY = "fs_intro_seen";
 const INTRO_VIDEO = "https://raw.githubusercontent.com/gughigug/metro-hero-assets/main/Subway_doors_open_to_city_202608242331.mp4";
@@ -152,6 +153,8 @@ export default function AppShell() {
       <ProjectListDialog />
       {/* Hold the sign-in prompt until the intro has opened the studio */}
       {introDone && <WelcomeDialog />}
+      {/* Signed-in people with pre-sharing lists get asked once */}
+      {introDone && <SharingPrompt />}
 
       {!introDone && (
         <ScrollLockedHero videoSrc={INTRO_VIDEO} onUnlock={finishIntro} />
