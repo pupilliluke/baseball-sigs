@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppShell from "./app/AppShell";
 import Studio from "./pages/Studio";
 import Collection from "./pages/Collection";
+import Community from "./pages/Community";
 import Gallery from "./pages/Gallery";
 import About from "./pages/About";
 
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Collection /> },
       { path: "/studio", element: <Studio /> },
+      { path: "/community", element: <Community /> },
       { path: "/gallery", element: <Gallery /> },
       { path: "/about", element: <About /> },
     ],

@@ -113,6 +113,7 @@ export default function AppShell() {
             {[
               { to: "/", label: "Collection" },
               { to: "/studio", label: "Studio" },
+              { to: "/community", label: "Community" },
               { to: "/gallery", label: "Gallery" },
               { to: "/about", label: "About" },
             ].map(({ to, label }) => (

@@ -1,6 +1,6 @@
 import {
   collection, addDoc, doc, updateDoc, deleteDoc, setDoc,
-  query, where, orderBy, getDocs, getDoc,
+  query, where, orderBy, limit, getDocs, getDoc,
   serverTimestamp
 } from "firebase/firestore";
 import { db, auth } from "../lib/firebase";
@@ -14,12 +14,13 @@ const coll = () => collection(db, "signature-projects");
  * the whole write — losing the list in front of the person — retry once
  * without the field. They keep their list; only the category waits.
  */
-async function writeWithCategoryFallback(write, category) {
+async function writeWithOptionalFields(write, optional) {
+  const present = Object.fromEntries(Object.entries(optional).filter(([, v]) => v !== undefined));
   try {
-    return await write(category !== undefined ? { category } : {});
+    return await write(present);
   } catch (error) {
-    if (error?.code === "permission-denied" && category !== undefined) {
-      console.warn("Save rejected with a category; retrying without it (rules may be behind).");
+    if (error?.code === "permission-denied" && Object.keys(present).length) {
+      console.warn("Save rejected with newer fields; retrying without them (rules may be behind).");
       return await write({});
     }
     throw error;
@@ -27,36 +28,37 @@ async function writeWithCategoryFallback(write, category) {
 }
 
 /** Create a brand new list (does not overwrite older ones) */
-export async function createProject({ userId, projectName, signatureNames, signatures, sport, category }) {
-  const ref = await writeWithCategoryFallback(
-    (categoryField) => addDoc(coll(), {
+export async function createProject({ userId, projectName, signatureNames, signatures, sport, category, visibility, ownerName }) {
+  const ref = await writeWithOptionalFields(
+    (optional) => addDoc(coll(), {
       userId,
       projectName,
       signatureNames,
       ...(signatures !== undefined ? { signatures } : {}),
       ...(sport !== undefined ? { sport } : {}),
-      ...categoryField,
+      ...optional,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }),
-    category
+    // New lists are shared by default; the owner can make any of them private.
+    { category, visibility: visibility || "public", ownerName }
   );
   return { id: ref.id };
 }
 
 /** Update an existing list by id */
-export async function updateProject({ projectId, projectName, signatureNames, signatures, sport, category }) {
+export async function updateProject({ projectId, projectName, signatureNames, signatures, sport, category, visibility, ownerName }) {
   const ref = doc(db, "signature-projects", projectId);
-  await writeWithCategoryFallback(
-    (categoryField) => updateDoc(ref, {
+  await writeWithOptionalFields(
+    (optional) => updateDoc(ref, {
       ...(projectName !== undefined ? { projectName } : {}),
       ...(signatureNames !== undefined ? { signatureNames } : {}),
       ...(signatures !== undefined ? { signatures } : {}),
       ...(sport !== undefined ? { sport } : {}),
-      ...categoryField,
+      ...optional,
       updatedAt: serverTimestamp(),
     }),
-    category
+    { category, visibility, ownerName }
   );
 }
 
@@ -73,9 +75,39 @@ export async function getUserProjects({ userId }) {
     ...d.data(),
     // Lists saved before categories existed are autographs
     category: d.data().category || "Autographs",
+    // Anything saved before sharing existed stays unlisted until its owner says otherwise
+    visibility: d.data().visibility || "private",
     createdAt: d.data().createdAt?.toDate(),
     updatedAt: d.data().updatedAt?.toDate()
   }));
+}
+
+/** Lists their owners have chosen to share, newest first. */
+export async function getPublicProjects({ max = 200 } = {}) {
+  const q = query(
+    coll(),
+    where("visibility", "==", "public"),
+    orderBy("updatedAt", "desc"),
+    limit(max)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({
+    id: d.id,
+    ...d.data(),
+    category: d.data().category || "Autographs",
+    visibility: "public",
+    createdAt: d.data().createdAt?.toDate(),
+    updatedAt: d.data().updatedAt?.toDate(),
+  }));
+}
+
+/** Publish or unpublish a single list. */
+export async function setProjectVisibility({ projectId, visibility, ownerName }) {
+  await updateDoc(doc(db, "signature-projects", projectId), {
+    visibility,
+    ...(ownerName ? { ownerName } : {}),
+    updatedAt: serverTimestamp(),
+  });
 }
 
 /**
